@@ -25,7 +25,7 @@ const hackathons = [
   },
   {
     name: 'Goldman Sachs National Hackathon',
-    year: '2025',
+    year: '2026',
     description: 'Achieved a Top 10% national ranking out of 10,000+ participants.',
   },
   {
