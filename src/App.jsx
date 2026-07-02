@@ -1,4 +1,5 @@
 import React from 'react';
+import { Analytics } from '@vercel/analytics/react';
 import Cursor from './components/Cursor';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
@@ -23,6 +24,7 @@ function App() {
         <Achievements />
         <Contact />
       </main>
+      <Analytics />
     </>
   );
 }
