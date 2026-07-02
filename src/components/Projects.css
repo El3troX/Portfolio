@@ -1,0 +1,339 @@
+/* ============================================
+   PROJECTS SECTION
+   ============================================ */
+
+.projects {
+  padding: 6rem 2rem;
+  background: var(--bg-void, #0a0a0a);
+  overflow: hidden;
+}
+
+/* ---- Section Title ---- */
+.projects__title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(3rem, 8vw, 6rem);
+  font-weight: 800;
+  color: var(--text-primary, #f5f5f5);
+  text-align: left;
+  margin: 0 0 4rem;
+  letter-spacing: -2px;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.projects__title-accent {
+  color: var(--acid-yellow, #ffe500);
+  position: relative;
+}
+
+.projects__title-accent::after {
+  content: '';
+  position: absolute;
+  bottom: 0.05em;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: var(--acid-yellow, #ffe500);
+  opacity: 0.5;
+}
+
+/* ---- Grid Layout ---- */
+.projects__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+
+/* First two cards span wider */
+.projects__card-wrapper--large {
+  grid-column: span 3;
+}
+
+.projects__card-wrapper--large:nth-child(1) {
+  grid-column: 1 / 3;
+}
+
+.projects__card-wrapper--large:nth-child(2) {
+  grid-column: 3 / 4;
+  grid-row: 1 / 2;
+}
+
+/* When both large cards are together, make a 2-col split */
+@supports (grid-template-columns: repeat(3, 1fr)) {
+  .projects__grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .projects__card-wrapper--large:nth-child(1) {
+    grid-column: 1 / 3;
+  }
+
+  .projects__card-wrapper--large:nth-child(2) {
+    grid-column: 3 / 4;
+  }
+}
+
+/* ---- Card Wrapper ---- */
+.projects__card-wrapper {
+  position: relative;
+  perspective: 1000px;
+  opacity: 0;
+  translate: 0 40px;
+  display: flex;
+  flex-direction: column;
+}
+
+.projects__card-wrapper--visible {
+  opacity: 1;
+  translate: 0 0;
+  transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+    translate 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Alternate rotation */
+.projects__card-wrapper--rot-neg {
+  --base-rotation: -0.5deg;
+}
+
+.projects__card-wrapper--rot-pos {
+  --base-rotation: 0.5deg;
+}
+
+.projects__card-wrapper:not(:hover) .projects__card {
+  rotate: var(--base-rotation, 0deg);
+}
+
+/* ---- Card Base ---- */
+.projects__card {
+  position: relative;
+  background: var(--bg-dark, #111111);
+  border-left: 4px solid var(--card-accent, var(--neon-lime, #b8ff00));
+  border-radius: 4px;
+  padding: 2rem;
+  text-align: left;
+  overflow: hidden;
+  will-change: transform;
+  transition: transform 0.1s ease, box-shadow 0.3s ease;
+  transform-style: preserve-3d;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  pointer-events: none; /* Let the wrapper handle mouse events */
+}
+
+/* Enable pointer events on interactive elements inside the card */
+.projects__card .projects__tag,
+.projects__card .projects__github-link {
+  pointer-events: auto;
+}
+
+/* ---- Card Hover ---- */
+.projects__card-wrapper:hover .projects__card {
+  box-shadow: 0 0 30px -5px var(--card-accent), 0 0 60px -10px var(--card-accent);
+  border-left-color: var(--card-accent);
+  rotate: 0deg;
+}
+
+/* ---- Card Number (background watermark) ---- */
+.projects__card-number {
+  position: absolute;
+  top: -0.15em;
+  right: 0.1em;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 5rem;
+  font-weight: 900;
+  color: var(--text-primary, #f5f5f5);
+  opacity: 0.07;
+  line-height: 1;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* ---- Card Header ---- */
+.projects__card-header {
+  margin-bottom: 0.75rem;
+}
+
+.projects__card-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-primary, #f5f5f5);
+  margin: 0 0 0.25rem;
+  line-height: 1.2;
+}
+
+.projects__card-subtitle {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem;
+  color: var(--text-muted, #888888);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+/* ---- Impact Statement ---- */
+.projects__card-impact {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: var(--neon-lime, #b8ff00);
+  margin: 0 0 0.75rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* ---- Details ---- */
+.projects__card-details {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: var(--text-muted, #888888);
+  margin: 0 0 1.25rem;
+}
+
+/* ---- Tech Tags ---- */
+.projects__card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.projects__tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  padding: 0.3rem 0.65rem;
+  border: 1px solid var(--card-accent, var(--neon-lime));
+  border-radius: 100px;
+  color: var(--card-accent, var(--neon-lime));
+  background: transparent;
+  transition: background 0.25s ease, color 0.25s ease;
+  cursor: default;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.projects__tag:hover {
+  background: var(--card-accent, var(--neon-lime));
+  color: var(--bg-void, #0a0a0a);
+}
+
+/* ---- Card Footer ---- */
+.projects__card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: auto;
+}
+
+.projects__card-date {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem;
+  color: var(--text-muted, #888888);
+  letter-spacing: 0.5px;
+}
+
+.projects__github-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted, #888888);
+  transition: color 0.25s ease, transform 0.25s ease;
+  text-decoration: none;
+}
+
+.projects__github-link:hover {
+  color: var(--card-accent, var(--neon-lime));
+  transform: scale(1.2);
+}
+
+/* ============================================
+   RESPONSIVE — TABLET (<=768px)
+   ============================================ */
+@media (max-width: 768px) {
+  .projects {
+    padding: 4rem 1.25rem;
+  }
+
+  .projects__title {
+    margin-bottom: 2.5rem;
+  }
+
+  .projects__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .projects__card-wrapper--large:nth-child(1) {
+    grid-column: 1 / -1;
+  }
+
+  .projects__card-wrapper--large:nth-child(2) {
+    grid-column: span 1;
+    grid-row: auto;
+  }
+}
+
+/* ============================================
+   RESPONSIVE — MOBILE (<=480px)
+   ============================================ */
+@media (max-width: 480px) {
+  .projects {
+    padding: 3rem 1rem;
+  }
+
+  .projects__title {
+    font-size: 2.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .projects__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .projects__card-wrapper--large:nth-child(1),
+  .projects__card-wrapper--large:nth-child(2) {
+    grid-column: span 1;
+    grid-row: auto;
+  }
+
+  /* Disable tilt rotation on mobile for cleaner UX */
+  .projects__card-wrapper {
+    --base-rotation: 0deg !important;
+  }
+
+  .projects__card-number {
+    font-size: 3.5rem;
+  }
+
+  .projects__card-title {
+    font-size: 1.25rem;
+  }
+}
+
+/* ============================================
+   REDUCED MOTION
+   ============================================ */
+@media (prefers-reduced-motion: reduce) {
+  .projects__card-wrapper {
+    opacity: 1;
+    translate: 0 0;
+    transition: none;
+  }
+
+  .projects__card-wrapper--visible {
+    transition: none;
+  }
+  
+  .projects__card {
+    transition: none;
+  }
+
+  .projects__tag {
+    transition: none;
+  }
+
+  .projects__github-link {
+    transition: none;
+  }
+}
