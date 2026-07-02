@@ -113,12 +113,22 @@ export default function Contact() {
           Got a project idea? Want to collaborate on something insane? Hit me up.
         </p>
 
-        <a
-          href="mailto:divyampandey845@gmail.com"
-          className="contact-email-cta"
-        >
-          divyampandey845@gmail.com
-        </a>
+        <div className="contact-actions">
+          <a
+            href="mailto:divyampandey845@gmail.com"
+            className="contact-email-cta"
+          >
+            divyampandey845@gmail.com
+          </a>
+          <a
+            href="https://drive.google.com/file/d/1SMI-JXfUaHXKTIL6RaO-tSvwWW9ZOfDk/view?usp=sharing"
+            className="contact-resume-cta"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Download Resume
+          </a>
+        </div>
 
         <span className="contact-location-badge" aria-label="Location">
           📍 VIT Vellore, India
