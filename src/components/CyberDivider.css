@@ -1,0 +1,59 @@
+/* ============================================
+   CYBERPUNK SECTION DIVIDER
+   ============================================ */
+
+.cyber-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 0 2rem;
+  max-width: 600px;
+  margin: 0 auto;
+  height: 40px;
+  user-select: none;
+}
+
+.cyber-divider__line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(184, 255, 0, 0.25) 30%,
+    rgba(0, 229, 255, 0.3) 50%,
+    rgba(184, 255, 0, 0.25) 70%,
+    transparent
+  );
+  animation: cyber-line-shimmer 3s ease-in-out infinite;
+}
+
+@keyframes cyber-line-shimmer {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+.cyber-divider__glitch-block {
+  display: flex;
+  align-items: center;
+  gap: 0.15rem;
+  font-size: 0.6rem;
+  letter-spacing: 0.15em;
+  color: rgba(0, 229, 255, 0.35);
+  animation: cyber-divider-glitch 6s infinite;
+}
+
+.cyber-divider__bracket {
+  color: rgba(184, 255, 0, 0.3);
+}
+
+.cyber-divider__data {
+  color: rgba(255, 45, 107, 0.3);
+}
+
+@keyframes cyber-divider-glitch {
+  0%, 88%, 100% { transform: translate(0); opacity: 0.6; }
+  89% { transform: translate(-2px, 1px); opacity: 1; }
+  90% { transform: translate(2px, -1px); opacity: 0.3; }
+  91% { transform: translate(0); opacity: 0.6; }
+}

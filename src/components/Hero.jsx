@@ -8,6 +8,21 @@ const Hero = () => {
   const [revealed, setRevealed] = useState(Array(targetName.length).fill(false));
   const [gibberish, setGibberish] = useState(targetName.split(''));
   const [phase, setPhase] = useState('scramble'); // 'scramble', 'falling', 'complete'
+  const [cyberTime, setCyberTime] = useState('');
+
+  useEffect(() => {
+    const tick = () => {
+      const now = new Date();
+      setCyberTime(
+        now.toLocaleTimeString('en-US', { hour12: false }) +
+        ':' +
+        String(now.getMilliseconds()).padStart(3, '0')
+      );
+    };
+    tick();
+    const id = setInterval(tick, 47); // ~21fps for that flickery data-feed feel
+    return () => clearInterval(id);
+  }, []);
 
   useEffect(() => {
     let scrambleInterval;
@@ -68,6 +83,26 @@ const Hero = () => {
         <div className="gradient-blob violet-blob"></div>
         <div className="gradient-blob blue-blob"></div>
         <div className="gradient-blob cyan-blob"></div>
+      </div>
+
+      {/* ── Cyberpunk HUD Overlay ── */}
+      <div className="cyber-hud" aria-hidden="true">
+        <div className="cyber-hud__corner cyber-hud__tl monospace">
+          <span className="cyber-hud__label">SYS</span>
+          <span className="cyber-hud__value cyber-hud__blink">ONLINE</span>
+        </div>
+        <div className="cyber-hud__corner cyber-hud__tr monospace">
+          <span className="cyber-hud__label">UTC.CLK</span>
+          <span className="cyber-hud__value">{cyberTime}</span>
+        </div>
+        <div className="cyber-hud__corner cyber-hud__bl monospace">
+          <span className="cyber-hud__label">LOC</span>
+          <span className="cyber-hud__value">12.9716°N 79.1588°E</span>
+        </div>
+        <div className="cyber-hud__corner cyber-hud__br monospace">
+          <span className="cyber-hud__label">NODE</span>
+          <span className="cyber-hud__value">DIVYAM.EXE</span>
+        </div>
       </div>
 
       <div className="hero-content">
@@ -149,3 +184,4 @@ const Hero = () => {
 };
 
 export default Hero;
+

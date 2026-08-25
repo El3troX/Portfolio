@@ -26,7 +26,9 @@
   color: var(--electric-cyan, #00e5ff);
   text-shadow:
     0 0 8px rgba(0, 229, 255, 0.5),
-    0 0 24px rgba(0, 229, 255, 0.2);
+    0 0 24px rgba(0, 229, 255, 0.2),
+    3px 0 rgba(255, 45, 107, 0.3),
+    -3px 0 rgba(184, 255, 0, 0.2);
 }
 
 /* ---- Terminal Window ---- */
@@ -35,11 +37,12 @@
   margin: 0 auto;
   background: var(--bg-dark, #111111);
   border-radius: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(0, 229, 255, 0.12);
   overflow: hidden;
   box-shadow:
     0 4px 40px rgba(0, 0, 0, 0.5),
-    0 0 60px rgba(0, 229, 255, 0.03);
+    0 0 60px rgba(0, 229, 255, 0.06),
+    0 0 120px rgba(0, 229, 255, 0.03);
 }
 
 /* ---- Terminal Header Bar ---- */
@@ -254,6 +257,76 @@
   display: inline-flex;
   align-items: center;
   margin-left: 8px;
+  background: transparent;
+  border: none;
+  padding: 2px;
+  cursor: pointer;
+  position: relative;
+  transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.cgpa-bar-ghost:hover {
+  transform: scale(1.3) translateY(-2px);
+}
+
+.cgpa-bar-ghost:hover .ghost-sprite {
+  filter: drop-shadow(0 0 12px #ff2d6b) drop-shadow(0 0 20px #ffe500);
+}
+
+.cgpa-bar-ghost:hover .ghost-challenge-tooltip {
+  opacity: 1;
+  transform: translateX(-50%) translateY(-6px);
+  pointer-events: auto;
+}
+
+.ghost-challenge-tooltip {
+  position: absolute;
+  bottom: 125%;
+  left: 50%;
+  transform: translateX(-50%) translateY(0);
+  background: #140727;
+  border: 1px solid #d946ef;
+  color: #e9d5ff;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.35rem 0.75rem;
+  border-radius: 6px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 0 20px rgba(217, 70, 239, 0.5), 0 4px 15px rgba(0, 0, 0, 0.6);
+  z-index: 50;
+}
+
+/* Speech bubble arrow pointer */
+.ghost-challenge-tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 5px solid transparent;
+  border-top-color: #140727;
+}
+
+.ghost-challenge-tooltip.is-visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(-6px);
+  pointer-events: auto;
+}
+
+.ghost-challenge-tooltip.is-enraged {
+  background: #2b0818;
+  border-color: #ff2d6b;
+  color: #ff2d6b;
+  box-shadow: 0 0 30px rgba(255, 45, 107, 0.8);
+  animation: enraged-text-pulse 0.25s infinite alternate;
+}
+
+@keyframes enraged-text-pulse {
+  0% { transform: translateX(-50%) translateY(-6px) scale(1); text-shadow: 0 0 10px #ff2d6b; }
+  100% { transform: translateX(-50%) translateY(-6px) scale(1.08); text-shadow: 0 0 20px #ff2d6b, 2px 0 #00e5ff; }
 }
 
 .ghost-sprite {
@@ -262,6 +335,53 @@
   filter: drop-shadow(0 0 6px rgba(0, 229, 255, 0.8));
   display: inline-block;
   vertical-align: middle;
+  transition: all 0.3s ease;
+}
+
+/* Annoyed Wobble on 1st Slash */
+.ghost-sprite--annoyed-1 {
+  animation: ghost-annoyed-wobble 0.4s ease-in-out;
+  filter: drop-shadow(0 0 14px #d946ef) !important;
+}
+
+@keyframes ghost-annoyed-wobble {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-14deg) scale(1.1); }
+  50% { transform: rotate(14deg) scale(1.15); }
+  75% { transform: rotate(-8deg) scale(1.1); }
+}
+
+/* Agitated Shake on 2nd Slash */
+.ghost-sprite--annoyed-2 {
+  animation: ghost-agitated-shake 0.5s ease-in-out infinite alternate;
+  filter: drop-shadow(0 0 18px #ff2d6b) drop-shadow(0 0 25px #ffe500) !important;
+}
+
+@keyframes ghost-agitated-shake {
+  0% { transform: translate(-2px, 1px) rotate(-8deg) scale(1.2); }
+  50% { transform: translate(2px, -2px) rotate(8deg) scale(1.25); }
+  100% { transform: translate(-1px, 2px) rotate(-4deg) scale(1.2); }
+}
+
+/* Enraged Ghost Flying Out Transformation Animation */
+.ghost-sprite--enraged {
+  animation: ghost-enrage-flyout 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes ghost-enrage-flyout {
+  0% {
+    transform: scale(1) translateY(0);
+    filter: drop-shadow(0 0 15px #ff2d6b);
+  }
+  40% {
+    transform: scale(2.5) translateY(-30px) rotate(-10deg);
+    filter: drop-shadow(0 0 35px #ff2d6b) drop-shadow(0 0 50px #ffe500);
+  }
+  100% {
+    transform: scale(4.5) translateY(-120px) rotate(5deg);
+    filter: drop-shadow(0 0 60px #ff2d6b) drop-shadow(0 0 90px #00e5ff);
+    opacity: 0.9;
+  }
 }
 
 .mini-ghost-sprite {

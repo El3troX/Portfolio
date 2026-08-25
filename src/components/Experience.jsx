@@ -1,5 +1,6 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
+import BossBattle from './BossBattle';
 import './Experience.css';
 
 /**
@@ -90,7 +91,16 @@ function MiniGhost({ color }) {
 }
 
 /* ---- CGPA Bar Builder (Maximalist Pac-Man Style) ---- */
-function buildCgpaBar(cgpa, max, ghostRef, pupilOffset) {
+function buildCgpaBar(
+  cgpa,
+  max,
+  ghostRef,
+  pupilOffset,
+  onGhostClick,
+  isEnraged,
+  pokeCount,
+  ghostDialogue
+) {
   const percent = (cgpa / max) * 100;
   const pos = Math.max(0, Math.min(20, Math.round((percent / 100) * 20)));
   const isMouthOpen = pos % 2 === 0;
@@ -108,13 +118,35 @@ function buildCgpaBar(cgpa, max, ghostRef, pupilOffset) {
     </svg>
   );
 
+  const ghostSpriteClass = isEnraged
+    ? 'ghost-sprite--enraged'
+    : pokeCount === 2
+    ? 'ghost-sprite--annoyed-2'
+    : pokeCount === 1
+    ? 'ghost-sprite--annoyed-1'
+    : '';
+
+  const ghostBodyFill = isEnraged
+    ? '#ff2d6b'
+    : pokeCount === 2
+    ? '#f43f5e'
+    : pokeCount === 1
+    ? '#d946ef'
+    : 'var(--electric-cyan, #00e5ff)';
+
   const ghostSvg = (
-    <svg viewBox="0 0 100 100" className="ghost-sprite" ref={ghostRef} aria-hidden="true" style={{ overflow: 'visible' }}>
+    <svg
+      viewBox="0 0 100 100"
+      className={`ghost-sprite ${ghostSpriteClass}`}
+      ref={ghostRef}
+      aria-hidden="true"
+      style={{ overflow: 'visible' }}
+    >
       <path d="M 30,22 L 25,0 L 40,12 L 50,-5 L 60,12 L 75,0 L 70,22 Z" fill="var(--acid-yellow, #ffe500)" />
       <circle cx="25" cy="0" r="3" fill="var(--neon-pink, #ff2d6b)" />
       <circle cx="50" cy="-5" r="3" fill="var(--neon-pink, #ff2d6b)" />
       <circle cx="75" cy="0" r="3" fill="var(--neon-pink, #ff2d6b)" />
-      <path d="M 20,50 A 30,30 0 0,1 80,50 L 80,95 L 70,85 L 60,95 L 50,85 L 40,95 L 30,85 L 20,95 Z" fill="var(--electric-cyan, #00e5ff)" />
+      <path d="M 20,50 A 30,30 0 0,1 80,50 L 80,95 L 70,85 L 60,95 L 50,85 L 40,95 L 30,85 L 20,95 Z" fill={ghostBodyFill} />
       <ellipse cx="40" cy="45" rx="8" ry="12" fill="#fff" />
       <ellipse cx="60" cy="45" rx="8" ry="12" fill="#fff" />
       <g style={{ transform: `translate(${pupilOffset.x}px, ${pupilOffset.y}px)` }}>
@@ -144,17 +176,33 @@ function buildCgpaBar(cgpa, max, ghostRef, pupilOffset) {
   return (
     <>
       {elements}
-      <span className="cgpa-bar-ghost">{ghostSvg}</span>
+      <button
+        type="button"
+        className={`cgpa-bar-ghost interactive boss-trigger-btn ${pokeCount > 0 ? 'is-speaking' : ''}`}
+        onClick={onGhostClick}
+        title="👑 Ghost King"
+        aria-label="Interact with Ghost King"
+      >
+        {ghostSvg}
+        <span className={`ghost-challenge-tooltip monospace ${pokeCount > 0 ? 'is-visible' : ''} ${isEnraged ? 'is-enraged' : ''}`}>
+          {ghostDialogue}
+        </span>
+      </button>
     </>
   );
 }
 
 export default function Experience() {
   const ghostRef = useRef(null);
+  const resetTimerRef = useRef(null);
   const [activeTab, setActiveTab] = useState('all');
   const [displayCgpa, setDisplayCgpa] = useState(0);
   const [hasStartedLoading, setHasStartedLoading] = useState(false);
   const [pupilOffset, setPupilOffset] = useState({ x: 0, y: 0 });
+  const [isBossBattleOpen, setIsBossBattleOpen] = useState(false);
+  const [isEnraged, setIsEnraged] = useState(false);
+  const [pokeCount, setPokeCount] = useState(0);
+  const [ghostDialogue, setGhostDialogue] = useState('👑 Ghost King');
 
   const tabs = [
     { id: 'all', label: 'career.log' },
@@ -162,6 +210,42 @@ export default function Experience() {
     { id: 'education', label: 'education.sh' },
     { id: 'certs', label: 'certifications.json' },
   ];
+
+  // Progressive Irritation on Slashes -> 3rd Slash triggers Boss Battle
+  const handleGhostSlash = useCallback(() => {
+    if (isEnraged) return;
+
+    if (resetTimerRef.current) clearTimeout(resetTimerRef.current);
+
+    setPokeCount((prev) => {
+      const nextCount = prev + 1;
+
+      if (nextCount === 1) {
+        setGhostDialogue('💬 "Hey! Watch the crown, mortal!"');
+        // Reset if left alone
+        resetTimerRef.current = setTimeout(() => {
+          setPokeCount(0);
+          setGhostDialogue('👑 Ghost King');
+        }, 4500);
+      } else if (nextCount === 2) {
+        setGhostDialogue('💬 "I am warning you... CEASE this at once!"');
+        resetTimerRef.current = setTimeout(() => {
+          setPokeCount(0);
+          setGhostDialogue('👑 Ghost King');
+        }, 4500);
+      } else if (nextCount >= 3) {
+        setGhostDialogue('🔥 "YOU BROUGHT THIS UPON YOURSELF!"');
+        setIsEnraged(true);
+
+        // Fly out into the sky and launch the Boss Battle
+        setTimeout(() => {
+          setIsBossBattleOpen(true);
+        }, 900);
+      }
+
+      return nextCount;
+    });
+  }, [isEnraged]);
 
   // Mouse tracking for ghost eyes
   useEffect(() => {
@@ -216,7 +300,16 @@ export default function Experience() {
     return () => clearInterval(interval);
   }, [hasStartedLoading]);
 
-  const cgpaBar = buildCgpaBar(displayCgpa, education.cgpaMax, ghostRef, pupilOffset);
+  const cgpaBar = buildCgpaBar(
+    displayCgpa,
+    education.cgpaMax,
+    ghostRef,
+    pupilOffset,
+    handleGhostSlash,
+    isEnraged,
+    pokeCount,
+    ghostDialogue
+  );
   const cgpaPercent = ((displayCgpa / education.cgpaMax) * 100).toFixed(1);
 
   return (
@@ -375,6 +468,15 @@ export default function Experience() {
           </div>
         </div>
       </div>
+
+      {/* Elden Ghost King Boss Battle Fullscreen Rift Overlay */}
+      <BossBattle
+        isOpen={isBossBattleOpen}
+        onClose={() => {
+          setIsBossBattleOpen(false);
+          setIsEnraged(false);
+        }}
+      />
     </motion.section>
   );
 }

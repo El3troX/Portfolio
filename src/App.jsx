@@ -9,6 +9,7 @@ import Projects from './components/Projects';
 import Experience from './components/Experience';
 import Achievements from './components/Achievements';
 import Contact from './components/Contact';
+import CyberDivider from './components/CyberDivider';
 
 function App() {
   return (
@@ -17,11 +18,17 @@ function App() {
       <Navbar />
       <main>
         <Hero />
+        <CyberDivider />
         <About />
+        <CyberDivider />
         <Skills />
+        <CyberDivider />
         <Projects />
+        <CyberDivider />
         <Experience />
+        <CyberDivider />
         <Achievements />
+        <CyberDivider />
         <Contact />
       </main>
       <Analytics />

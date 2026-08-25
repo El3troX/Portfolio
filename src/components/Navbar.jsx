@@ -94,6 +94,10 @@ const Navbar = () => {
         >
           DP<span className="logo-dot">.</span>
         </motion.a>
+        <span className="nav-sys-status monospace">
+          <span className="nav-sys-dot" />
+          SYS:ONLINE
+        </span>
 
         <div className="nav-links">
           {navLinks.map((link) => {

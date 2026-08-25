@@ -1,13 +1,15 @@
 .hero-section {
   position: relative;
   width: 100%;
-  height: 100vh;
+  min-height: 100vh;
+  min-height: 100dvh;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   overflow: hidden;
   max-width: 100%;
+  padding: 5rem 1.5rem 3rem;
 }
 
 .hero-background {
@@ -24,8 +26,13 @@
   position: absolute;
   border-radius: 50%;
   filter: blur(80px);
-  opacity: 0.4;
-  animation: float 8s ease-in-out infinite;
+  opacity: 0.5;
+  animation: float 8s ease-in-out infinite, cyber-color-drift 12s ease-in-out infinite;
+}
+
+@keyframes cyber-color-drift {
+  0%, 100% { filter: blur(80px) hue-rotate(0deg); }
+  50% { filter: blur(90px) hue-rotate(15deg); }
 }
 
 .violet-blob {
@@ -53,6 +60,19 @@
   bottom: 20%;
   right: 15%;
   animation-delay: -4s;
+}
+
+/* Cyberpunk hex grid overlay on hero */
+.hero-background::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(184, 255, 0, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(184, 255, 0, 0.03) 1px, transparent 1px);
+  background-size: 60px 60px;
+  pointer-events: none;
+  z-index: 0;
 }
 
 .hero-content {
@@ -89,18 +109,20 @@
 }
 
 .glitch-name::before {
-  left: 2px;
-  text-shadow: -2px 0 var(--neon-pink);
+  left: 3px;
+  text-shadow: -3px 0 var(--neon-pink);
   clip-path: inset(20% 0 80% 0);
-  animation: glitch 2.5s infinite linear alternate-reverse;
+  animation: glitch 2s infinite linear alternate-reverse;
+  opacity: 0.8;
 }
 
 .glitch-name::after {
-  left: -2px;
-  text-shadow: -2px 0 var(--electric-cyan);
+  left: -3px;
+  text-shadow: -3px 0 var(--electric-cyan);
   clip-path: inset(80% 0 5% 0);
-  animation: glitch 3s infinite linear alternate-reverse;
-  animation-delay: 0.5s;
+  animation: glitch 2.5s infinite linear alternate-reverse;
+  animation-delay: 0.3s;
+  opacity: 0.8;
 }
 
 /* Spider-Verse Glitch for Scramble Phase */
@@ -144,12 +166,13 @@
 .marquee-container {
   width: 100%;
   overflow: hidden;
-  background-color: rgba(255, 255, 255, 0.03);
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  background-color: rgba(184, 255, 0, 0.03);
+  border-top: 1px solid rgba(184, 255, 0, 0.15);
+  border-bottom: 1px solid rgba(184, 255, 0, 0.15);
   padding: 1rem 0;
   margin: 2rem 0 3rem 0;
   transform: rotate(-1deg);
+  box-shadow: 0 0 20px rgba(184, 255, 0, 0.05);
 }
 
 .marquee-content {
@@ -190,6 +213,7 @@
   text-decoration: none;
   text-transform: uppercase;
   border-radius: 0;
+  white-space: nowrap;
   transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   box-shadow: 4px 4px 0px var(--neon-pink);
 }
@@ -199,6 +223,10 @@
   color: #fff;
   transform: translate(-4px, -4px);
   box-shadow: 8px 8px 0px var(--neon-blue), 0 0 20px rgba(255, 45, 107, 0.5);
+}
+
+.cta-button:active {
+  transform: translate(-2px, -2px) scale(0.98);
 }
 
 .scroll-indicator {
@@ -266,5 +294,78 @@
 @media (max-width: 380px) {
   .hero-title-container {
     font-size: 2.2rem;
+  }
+}
+
+/* ============================================
+   CYBERPUNK HUD OVERLAY
+   ============================================ */
+
+.cyber-hud {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+  padding: 1.5rem;
+}
+
+.cyber-hud__corner {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.65rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(184, 255, 0, 0.4);
+  opacity: 0.7;
+}
+
+.cyber-hud__label {
+  color: rgba(136, 136, 136, 0.5);
+}
+
+.cyber-hud__value {
+  color: rgba(184, 255, 0, 0.5);
+  font-variant-numeric: tabular-nums;
+}
+
+.cyber-hud__blink {
+  animation: hud-blink 2s steps(1) infinite;
+}
+
+@keyframes hud-blink {
+  0%, 80% { opacity: 1; }
+  40%, 60% { opacity: 0; }
+}
+
+/* Corner positions */
+.cyber-hud__tl { top: 1.5rem; left: 1.5rem; }
+.cyber-hud__tr { top: 1.5rem; right: 1.5rem; }
+.cyber-hud__bl { bottom: 4rem; left: 1.5rem; }
+.cyber-hud__br { bottom: 4rem; right: 1.5rem; }
+
+/* Corner decorative brackets */
+.cyber-hud__tl::before {
+  content: '[ ';
+  color: rgba(0, 229, 255, 0.3);
+}
+.cyber-hud__tl::after,
+.cyber-hud__tr::after,
+.cyber-hud__bl::after,
+.cyber-hud__br::after {
+  content: ' ]';
+  color: rgba(0, 229, 255, 0.3);
+}
+.cyber-hud__tr::before,
+.cyber-hud__bl::before,
+.cyber-hud__br::before {
+  content: '[ ';
+  color: rgba(0, 229, 255, 0.3);
+}
+
+@media (max-width: 768px) {
+  .cyber-hud {
+    display: none;
   }
 }

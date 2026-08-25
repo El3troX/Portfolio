@@ -5,7 +5,7 @@
 .mc-nether-resume-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(6, 2, 12, 0.92);
+  background: rgba(6, 2, 12, 0.94);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
   z-index: 99999;
@@ -14,6 +14,23 @@
   justify-content: center;
   padding: 1rem;
   overflow-y: auto;
+}
+
+/* Cyberpunk CRT scanlines overlay on the entire modal */
+.mc-nether-resume-backdrop::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 100000;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.08) 2px,
+    rgba(0, 0, 0, 0.08) 4px
+  );
+  mix-blend-mode: multiply;
 }
 
 .mc-nether-portal-resume-wrapper {
@@ -51,6 +68,16 @@
   font-size: 0.82rem;
   color: #e9d5ff;
   box-shadow: 0 0 15px rgba(189, 52, 235, 0.3);
+  animation: cyber-title-glitch 4s infinite;
+}
+
+@keyframes cyber-title-glitch {
+  0%, 92%, 100% { text-shadow: none; transform: translate(0); }
+  93% { text-shadow: -2px 0 var(--neon-pink), 2px 0 var(--electric-cyan); transform: translate(-1px, 1px); }
+  94% { text-shadow: 2px 0 var(--neon-pink), -2px 0 var(--electric-cyan); transform: translate(1px, -1px); }
+  95% { text-shadow: none; transform: translate(0); }
+  96% { text-shadow: -1px 0 var(--electric-cyan), 1px 0 var(--neon-lime); transform: translate(1px, 0); }
+  97% { text-shadow: none; transform: translate(0); }
 }
 
 .mc-portal-spark-dot {
@@ -147,6 +174,24 @@
     0 0 40px rgba(168, 85, 247, 0.35),
     0 0 100px rgba(125, 18, 255, 0.2),
     0 25px 60px rgba(0, 0, 0, 0.95);
+  animation: cyber-portal-breathe 3s ease-in-out infinite;
+}
+
+/* Slow neon pulse on the entire portal frame */
+@keyframes cyber-portal-breathe {
+  0%, 100% {
+    box-shadow:
+      0 0 40px rgba(168, 85, 247, 0.35),
+      0 0 100px rgba(125, 18, 255, 0.2),
+      0 25px 60px rgba(0, 0, 0, 0.95);
+  }
+  50% {
+    box-shadow:
+      0 0 60px rgba(217, 70, 239, 0.5),
+      0 0 120px rgba(125, 18, 255, 0.35),
+      0 0 180px rgba(168, 85, 247, 0.15),
+      0 25px 60px rgba(0, 0, 0, 0.95);
+  }
 }
 
 /* Obsidian Blocks in Frame */
@@ -216,6 +261,25 @@
     inset 0 0 70px rgba(125, 18, 255, 0.4);
 }
 
+/* Cyberpunk horizontal interference line sweeping through portal */
+.mc-portal-inner-chamber::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(184, 255, 0, 0.5), rgba(0, 229, 255, 0.4), transparent);
+  z-index: 10;
+  pointer-events: none;
+  animation: cyber-scanline-sweep 4s linear infinite;
+  opacity: 0.6;
+}
+
+@keyframes cyber-scanline-sweep {
+  0% { top: -2px; }
+  100% { top: 100%; }
+}
+
 /* Purple Plasma Glow along portal opening edges */
 .mc-portal-purple-vignette {
   position: absolute;
@@ -244,20 +308,21 @@
   width: 4px;
   height: 4px;
   background: #d946ef;
-  box-shadow: 0 0 8px #d946ef;
+  box-shadow: 0 0 8px #d946ef, 0 0 16px rgba(217, 70, 239, 0.3);
   border-radius: 1px;
 }
 
-.spark-1 { left: 10%; bottom: 15%; animation: mc-rise 3s infinite linear; }
-.spark-2 { left: 45%; bottom: 8%; animation: mc-rise 3.8s 1s infinite linear; }
-.spark-3 { right: 25%; bottom: 20%; animation: mc-rise 2.6s 0.4s infinite linear; }
-.spark-4 { right: 8%; bottom: 12%; animation: mc-rise 3.2s 1.5s infinite linear; }
+.spark-1 { left: 10%; bottom: 15%; animation: mc-rise 3s infinite linear; background: #d946ef; box-shadow: 0 0 8px #d946ef; }
+.spark-2 { left: 45%; bottom: 8%; animation: mc-rise 3.8s 1s infinite linear; background: var(--electric-cyan); box-shadow: 0 0 8px var(--electric-cyan); }
+.spark-3 { right: 25%; bottom: 20%; animation: mc-rise 2.6s 0.4s infinite linear; background: var(--neon-lime); box-shadow: 0 0 8px var(--neon-lime); }
+.spark-4 { right: 8%; bottom: 12%; animation: mc-rise 3.2s 1.5s infinite linear; background: var(--neon-pink); box-shadow: 0 0 8px var(--neon-pink); }
 
 @keyframes mc-rise {
-  0% { transform: translateY(0); opacity: 0; }
-  30% { opacity: 1; }
-  80% { opacity: 0.7; }
-  100% { transform: translateY(-400px); opacity: 0; }
+  0% { transform: translateY(0) scaleX(1); opacity: 0; }
+  20% { opacity: 1; }
+  50% { transform: translateY(-180px) scaleX(1.5); opacity: 0.8; }
+  80% { opacity: 0.5; }
+  100% { transform: translateY(-400px) scaleX(0.5); opacity: 0; }
 }
 
 /* Resume PDF Frame */

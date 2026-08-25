@@ -33,6 +33,16 @@
   margin-left: -3px;
 }
 
+/* Hide pickaxe cursor completely during Elden Boss Battle */
+body.boss-battle-active .mc-cursor-container,
+body.boss-battle-active .mc-break-particle,
+body.boss-battle-active .mc-strike-effect {
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
 /* Pickaxe container hotspot */
 .mc-cursor--pickaxe {
   margin-top: -3px;

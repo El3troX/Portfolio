@@ -215,7 +215,13 @@
   height: 3px;
   border-radius: 2px;
   background: var(--cat-color);
-  box-shadow: 0 0 8px var(--cat-color);
+  box-shadow: 0 0 8px var(--cat-color), 0 0 20px var(--cat-color);
+  animation: cyber-underline-pulse 3s ease-in-out infinite;
+}
+
+@keyframes cyber-underline-pulse {
+  0%, 100% { opacity: 1; box-shadow: 0 0 8px var(--cat-color); }
+  50% { opacity: 0.7; box-shadow: 0 0 15px var(--cat-color), 0 0 30px var(--cat-color); }
 }
 
 /* ---------- badge container ---------- */
@@ -240,7 +246,11 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  transition: box-shadow 0.25s ease, background 0.25s ease;
+  transition: box-shadow 0.25s ease, background 0.25s ease, transform 0.2s ease;
+}
+
+.skills__badge:active {
+  transform: scale(0.95);
 }
 
 /* sizes */
