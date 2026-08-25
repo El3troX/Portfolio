@@ -1,5 +1,5 @@
 /* ============================================
-   PROJECTS SECTION
+   PROJECTS SECTION — Interactive Portal Cards
    ============================================ */
 
 .projects {
@@ -15,7 +15,7 @@
   font-weight: 800;
   color: var(--text-primary, #f5f5f5);
   text-align: left;
-  margin: 0 0 4rem;
+  margin: 0;
   letter-spacing: -2px;
   line-height: 1;
   text-transform: uppercase;
@@ -44,7 +44,6 @@
   gap: 1.5rem;
 }
 
-/* First two cards span wider */
 .projects__card-wrapper--large {
   grid-column: span 3;
 }
@@ -55,86 +54,96 @@
 
 .projects__card-wrapper--large:nth-child(2) {
   grid-column: 3 / 4;
-  grid-row: 1 / 2;
-}
-
-/* When both large cards are together, make a 2-col split */
-@supports (grid-template-columns: repeat(3, 1fr)) {
-  .projects__grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
-
-  .projects__card-wrapper--large:nth-child(1) {
-    grid-column: 1 / 3;
-  }
-
-  .projects__card-wrapper--large:nth-child(2) {
-    grid-column: 3 / 4;
-  }
 }
 
 /* ---- Card Wrapper ---- */
 .projects__card-wrapper {
   position: relative;
-  perspective: 1000px;
-  opacity: 0;
-  translate: 0 40px;
   display: flex;
   flex-direction: column;
-}
-
-.projects__card-wrapper--visible {
-  opacity: 1;
-  translate: 0 0;
-  transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
-    translate 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-/* Alternate rotation */
-.projects__card-wrapper--rot-neg {
-  --base-rotation: -0.5deg;
-}
-
-.projects__card-wrapper--rot-pos {
-  --base-rotation: 0.5deg;
-}
-
-.projects__card-wrapper:not(:hover) .projects__card {
-  rotate: var(--base-rotation, 0deg);
+  perspective: 1000px;
+  cursor: pointer;
+  outline: none;
 }
 
 /* ---- Card Base ---- */
 .projects__card {
   position: relative;
   background: var(--bg-dark, #111111);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-left: 4px solid var(--card-accent, var(--neon-lime, #b8ff00));
-  border-radius: 4px;
-  padding: 2rem;
+  border-radius: 8px;
+  padding: 1.75rem 2rem 2rem;
   text-align: left;
   overflow: hidden;
-  will-change: transform;
-  transition: transform 0.1s ease, box-shadow 0.3s ease;
-  transform-style: preserve-3d;
   height: 100%;
   display: flex;
   flex-direction: column;
-  pointer-events: none; /* Let the wrapper handle mouse events */
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  transition: transform 0.1s ease, box-shadow 0.3s ease, border-color 0.3s ease;
 }
 
-/* Enable pointer events on interactive elements inside the card */
-.projects__card .projects__tag,
-.projects__card .projects__github-link {
-  pointer-events: auto;
+/* Nether Portal Ambient Background inside Card */
+.card-nether-portal-layer {
+  position: absolute;
+  inset: 0;
+  opacity: 0.18;
+  pointer-events: none;
+  transition: opacity 0.35s ease, filter 0.35s ease;
+  mix-blend-mode: screen;
 }
 
-/* ---- Card Hover ---- */
+.projects__card-wrapper:hover .card-nether-portal-layer {
+  opacity: 0.45;
+  filter: contrast(120%) brightness(1.2);
+}
+
 .projects__card-wrapper:hover .projects__card {
-  box-shadow: 0 0 30px -5px var(--card-accent), 0 0 60px -10px var(--card-accent);
-  border-left-color: var(--card-accent);
-  rotate: 0deg;
+  box-shadow: 0 0 40px -5px rgba(186, 104, 200, 0.35), 0 10px 40px rgba(0, 0, 0, 0.6);
+  border-color: rgba(186, 104, 200, 0.4);
 }
 
-/* ---- Card Number (background watermark) ---- */
+/* ---- Portal Ribbon (Header) ---- */
+.projects__portal-ribbon {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.7rem;
+  color: var(--card-accent, var(--neon-lime));
+  margin-bottom: 0.75rem;
+  opacity: 0.85;
+  transition: opacity 0.2s ease;
+}
+
+.projects__group-ribbon {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  margin-bottom: 0.75rem;
+  opacity: 0.75;
+}
+
+.projects__group-tag {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  background: rgba(255, 255, 255, 0.04);
+  padding: 0.25rem 0.6rem;
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.projects__card-wrapper--portal:hover .projects__portal-ribbon {
+  opacity: 1;
+  text-shadow: 0 0 10px var(--card-accent);
+}
+
+.portal-sparkle-spin {
+  animation: spin-sparkle 6s linear infinite;
+}
+
+/* ---- Card Number ---- */
 .projects__card-number {
   position: absolute;
   top: -0.15em;
@@ -149,7 +158,6 @@
   user-select: none;
 }
 
-/* ---- Card Header ---- */
 .projects__card-header {
   margin-bottom: 0.75rem;
 }
@@ -171,7 +179,6 @@
   text-transform: uppercase;
 }
 
-/* ---- Impact Statement ---- */
 .projects__card-impact {
   font-family: 'JetBrains Mono', monospace;
   font-size: 0.85rem;
@@ -182,7 +189,6 @@
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
 
-/* ---- Details ---- */
 .projects__card-details {
   font-family: 'Space Grotesk', sans-serif;
   font-size: 0.9rem;
@@ -191,7 +197,6 @@
   margin: 0 0 1.25rem;
 }
 
-/* ---- Tech Tags ---- */
 .projects__card-tags {
   display: flex;
   flex-wrap: wrap;
@@ -207,24 +212,18 @@
   border-radius: 100px;
   color: var(--card-accent, var(--neon-lime));
   background: transparent;
-  transition: background 0.25s ease, color 0.25s ease;
-  cursor: default;
   letter-spacing: 0.3px;
   text-transform: uppercase;
   white-space: nowrap;
 }
 
-.projects__tag:hover {
-  background: var(--card-accent, var(--neon-lime));
-  color: var(--bg-void, #0a0a0a);
-}
-
-/* ---- Card Footer ---- */
 .projects__card-footer {
   display: flex;
   align-items: center;
   justify-content: space-between;
   margin-top: auto;
+  padding-top: 0.75rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .projects__card-date {
@@ -234,13 +233,42 @@
   letter-spacing: 0.5px;
 }
 
+.projects__enter-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--card-accent, var(--neon-lime));
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--card-accent, var(--neon-lime));
+  padding: 0.3rem 0.7rem;
+  border-radius: 9999px;
+  transition: all 0.2s ease;
+}
+
+.projects__card-wrapper:hover .projects__enter-pill {
+  background: var(--card-accent, var(--neon-lime));
+  color: var(--bg-void);
+  box-shadow: 0 0 15px var(--card-accent, var(--neon-lime));
+}
+
+.pill-arrow {
+  transition: transform 0.2s ease;
+}
+
+.projects__card-wrapper:hover .pill-arrow {
+  transform: translateX(3px);
+}
+
 .projects__github-link {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  color: var(--text-muted, #888888);
-  transition: color 0.25s ease, transform 0.25s ease;
-  text-decoration: none;
+  color: var(--text-muted);
+  padding: 0.4rem;
+  border-radius: 4px;
+  transition: color 0.2s ease, transform 0.2s ease;
 }
 
 .projects__github-link:hover {
@@ -255,85 +283,30 @@
   .projects {
     padding: 4rem 1.25rem;
   }
-
-  .projects__title {
-    margin-bottom: 2.5rem;
-  }
-
   .projects__grid {
     grid-template-columns: repeat(2, 1fr);
   }
-
   .projects__card-wrapper--large:nth-child(1) {
     grid-column: 1 / -1;
   }
-
   .projects__card-wrapper--large:nth-child(2) {
     grid-column: span 1;
-    grid-row: auto;
   }
 }
 
-/* ============================================
-   RESPONSIVE — MOBILE (<=480px)
-   ============================================ */
 @media (max-width: 480px) {
   .projects {
     padding: 3rem 1rem;
   }
-
   .projects__title {
     font-size: 2.5rem;
     margin-bottom: 2rem;
   }
-
   .projects__grid {
     grid-template-columns: 1fr;
   }
-
   .projects__card-wrapper--large:nth-child(1),
   .projects__card-wrapper--large:nth-child(2) {
     grid-column: span 1;
-    grid-row: auto;
-  }
-
-  /* Disable tilt rotation on mobile for cleaner UX */
-  .projects__card-wrapper {
-    --base-rotation: 0deg !important;
-  }
-
-  .projects__card-number {
-    font-size: 3.5rem;
-  }
-
-  .projects__card-title {
-    font-size: 1.25rem;
-  }
-}
-
-/* ============================================
-   REDUCED MOTION
-   ============================================ */
-@media (prefers-reduced-motion: reduce) {
-  .projects__card-wrapper {
-    opacity: 1;
-    translate: 0 0;
-    transition: none;
-  }
-
-  .projects__card-wrapper--visible {
-    transition: none;
-  }
-  
-  .projects__card {
-    transition: none;
-  }
-
-  .projects__tag {
-    transition: none;
-  }
-
-  .projects__github-link {
-    transition: none;
   }
 }

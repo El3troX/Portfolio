@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { motion } from 'motion/react';
+import ParticleBackground from './ParticleBackground';
 import './Hero.css';
 
 const Hero = () => {
@@ -60,6 +62,8 @@ const Hero = () => {
 
   return (
     <section id="hero" className="hero-section">
+      <ParticleBackground />
+
       <div className="hero-background">
         <div className="gradient-blob violet-blob"></div>
         <div className="gradient-blob blue-blob"></div>
@@ -87,9 +91,14 @@ const Hero = () => {
           })}
         </h1>
         
-        <p className="hero-subtitle monospace">
+        <motion.p 
+          className="hero-subtitle monospace"
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.4 }}
+        >
           <span className="neon-highlight">AI/ML Engineer</span> &amp; <span className="neon-highlight">Full-Stack Developer</span>
-        </p>
+        </motion.p>
 
         <div className="marquee-container">
           <div className="marquee-content">
@@ -107,18 +116,34 @@ const Hero = () => {
           </div>
         </div>
 
-        <div className="hero-cta-wrapper">
-          <a href="#contact" className="cta-button monospace">
-            Let's Build Something Insane →
-          </a>
+        <motion.div 
+          className="hero-cta-wrapper"
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5, delay: 0.6, type: 'spring' }}
+        >
+          <motion.a 
+            href="#contact" 
+            className="cta-button monospace"
+            whileHover={{ scale: 1.06, x: -2, y: -2 }}
+            whileTap={{ scale: 0.96 }}
+            transition={{ type: 'spring', stiffness: 400, damping: 17 }}
+          >
+            Let&apos;s Build Something Insane →
+          </motion.a>
           <div className="cta-doodle"></div>
-        </div>
+        </motion.div>
       </div>
 
-      <div className="scroll-indicator">
+      <motion.div 
+        className="scroll-indicator"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1.2, duration: 1 }}
+      >
         <div className="scroll-arrow"></div>
         <span className="monospace">scroll down</span>
-      </div>
+      </motion.div>
     </section>
   );
 };

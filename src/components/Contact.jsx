@@ -1,4 +1,6 @@
-import { useEffect, useRef } from 'react';
+import { useState } from 'react';
+import { motion } from 'motion/react';
+import ResumeModal from './ResumeModal';
 import './Contact.css';
 
 const MARQUEE_TEXT =
@@ -41,68 +43,31 @@ const SOCIALS = [
 ];
 
 export default function Contact() {
-  const headlineRef = useRef(null);
-  const socialsRef = useRef(null);
+  const [copied, setCopied] = useState(false);
+  const [isResumeOpen, setIsResumeOpen] = useState(false);
 
-  useEffect(() => {
-    /* Check for reduced-motion preference */
-    const prefersReduced = window.matchMedia(
-      '(prefers-reduced-motion: reduce)'
-    ).matches;
-
-    if (prefersReduced) {
-      /* Show everything immediately */
-      if (headlineRef.current) {
-        headlineRef.current.classList.add('is-visible');
-      }
-      if (socialsRef.current) {
-        socialsRef.current.querySelectorAll('.social-icon-link').forEach((el) => {
-          el.classList.add('is-visible');
-        });
-      }
-      return;
-    }
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (!entry.isIntersecting) return;
-
-          const target = entry.target;
-
-          /* Headline fade-in */
-          if (target === headlineRef.current) {
-            target.classList.add('is-visible');
-            observer.unobserve(target);
-          }
-
-          /* Stagger social icons */
-          if (target === socialsRef.current) {
-            const icons = target.querySelectorAll('.social-icon-link');
-            icons.forEach((icon, i) => {
-              setTimeout(() => {
-                icon.style.transition = `opacity 0.5s ease ${i * 0.1}s, transform 0.5s cubic-bezier(0.175,0.885,0.32,1.275) ${i * 0.1}s, background 0.3s cubic-bezier(0.175,0.885,0.32,1.275), box-shadow 0.3s ease, border-color 0.3s ease`;
-                icon.classList.add('is-visible');
-              }, 0);
-            });
-            observer.unobserve(target);
-          }
-        });
-      },
-      { threshold: 0.2 }
-    );
-
-    if (headlineRef.current) observer.observe(headlineRef.current);
-    if (socialsRef.current) observer.observe(socialsRef.current);
-
-    return () => observer.disconnect();
-  }, []);
+  const handleCopyEmail = (e) => {
+    e.preventDefault();
+    navigator.clipboard.writeText('divyampandey845@gmail.com');
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2500);
+  };
 
   return (
-    <section id="contact" className="contact-section">
+    <motion.section
+      id="contact"
+      className="contact-section"
+      initial={{ opacity: 0, y: 40 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '-80px' }}
+      transition={{ duration: 0.7 }}
+    >
+      {/* Interactive Obsidian & Crying Obsidian Resume Viewer Modal */}
+      <ResumeModal isOpen={isResumeOpen} onClose={() => setIsResumeOpen(false)} />
+
       {/* ---- CTA Area ---- */}
       <div className="contact-cta">
-        <div className="contact-headline" ref={headlineRef}>
+        <div className="contact-headline is-visible">
           <h2>
             Let&rsquo;s cause some{' '}
             <span className="chaos-word">chaos</span> together
@@ -114,20 +79,25 @@ export default function Contact() {
         </p>
 
         <div className="contact-actions">
-          <a
-            href="mailto:divyampandey845@gmail.com"
-            className="contact-email-cta"
+          <motion.button
+            onClick={handleCopyEmail}
+            className="contact-email-cta monospace"
+            style={{ position: 'relative', cursor: 'pointer', border: 'none', font: 'inherit' }}
+            whileHover={{ scale: 1.05, y: -2 }}
+            whileTap={{ scale: 0.95 }}
           >
-            divyampandey845@gmail.com
-          </a>
-          <a
-            href="https://drive.google.com/file/d/1SMI-JXfUaHXKTIL6RaO-tSvwWW9ZOfDk/view?usp=sharing"
-            className="contact-resume-cta"
-            target="_blank"
-            rel="noopener noreferrer"
+            {copied ? '✓ Email Copied!' : 'divyampandey845@gmail.com'}
+          </motion.button>
+
+          <motion.button
+            onClick={() => setIsResumeOpen(true)}
+            className="contact-resume-cta monospace"
+            style={{ border: 'none', font: 'inherit', cursor: 'pointer' }}
+            whileHover={{ scale: 1.05, y: -2 }}
+            whileTap={{ scale: 0.95 }}
           >
             Download Resume
-          </a>
+          </motion.button>
         </div>
 
         <span className="contact-location-badge" aria-label="Location">
@@ -135,18 +105,21 @@ export default function Contact() {
         </span>
 
         {/* Social icons */}
-        <nav className="contact-socials" ref={socialsRef} aria-label="Social links">
+        <nav className="contact-socials" aria-label="Social links">
           {SOCIALS.map((s) => (
-            <a
+            <motion.a
               key={s.modifier}
               href={s.href}
-              className={`social-icon-link social-icon-link--${s.modifier}`}
+              className={`social-icon-link social-icon-link--${s.modifier} is-visible`}
               target={s.href.startsWith('http') ? '_blank' : undefined}
               rel={s.href.startsWith('http') ? 'noopener noreferrer' : undefined}
               aria-label={s.label}
+              whileHover={{ scale: 1.25, rotate: 6 }}
+              whileTap={{ scale: 0.9 }}
+              transition={{ type: 'spring', stiffness: 400, damping: 15 }}
             >
               {s.icon}
-            </a>
+            </motion.a>
           ))}
         </nav>
       </div>
@@ -154,7 +127,6 @@ export default function Contact() {
       {/* ---- Marquee Footer ---- */}
       <div className="marquee-footer" role="marquee" aria-label="Scrolling banner">
         <div className="marquee-track">
-          {/* Duplicate content for seamless loop */}
           <span className="marquee-content">{MARQUEE_TEXT.repeat(6)}</span>
           <span className="marquee-content">{MARQUEE_TEXT.repeat(6)}</span>
         </div>
@@ -162,8 +134,8 @@ export default function Contact() {
 
       {/* ---- Copyright ---- */}
       <footer className="contact-copyright">
-        <small>&copy; 2025 Divyam Pandey. Designed with controlled chaos.</small>
+        <small>&copy; 2026 Divyam Pandey. Designed with controlled chaos.</small>
       </footer>
-    </section>
+    </motion.section>
   );
 }

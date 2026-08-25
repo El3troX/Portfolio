@@ -1,0 +1,101 @@
+.nether-portal-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* ============================================
+   FULL-SCREEN NETHER WARP TRANSITION OVERLAY (1.2s)
+   ============================================ */
+.nether-warp-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  animation: nether-screen-distort 1.2s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+.nether-warp-canvas-bg {
+  position: absolute;
+  inset: -15vw;
+  width: 130vw;
+  height: 130vh;
+  filter: blur(2px) contrast(150%);
+}
+
+.nether-warp-swirl {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at center,
+    rgba(186, 104, 200, 0.55) 0%,
+    rgba(74, 14, 104, 0.85) 45%,
+    rgba(10, 0, 20, 0.98) 100%
+  );
+  mix-blend-mode: hard-light;
+  animation: nether-swirl-wobble 0.6s ease-in-out infinite;
+}
+
+.nether-warp-title {
+  position: relative;
+  z-index: 10;
+  font-family: 'Space Grotesk', monospace;
+  font-size: 2.3rem;
+  font-weight: 900;
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 4px;
+  text-shadow:
+    0 0 20px #e91e63,
+    0 0 50px #9c27b0,
+    0 0 80px #d946ef;
+  animation: nether-title-pulse 1.2s ease-in-out forwards;
+}
+
+@keyframes nether-screen-distort {
+  0% {
+    opacity: 0;
+    transform: scale(0.9) rotate(0deg);
+    filter: blur(0px);
+  }
+  25% {
+    opacity: 1;
+    transform: scale(1.05) rotate(1.5deg);
+    filter: blur(2px) brightness(1.2);
+  }
+  60% {
+    opacity: 1;
+    transform: scale(1.08) rotate(-1.5deg);
+    filter: blur(3px) brightness(1.35);
+  }
+  85% {
+    opacity: 1;
+    transform: scale(1.02) rotate(1deg);
+    filter: blur(2px) brightness(1.1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.16) rotate(0deg);
+    filter: blur(8px);
+  }
+}
+
+@keyframes nether-swirl-wobble {
+  0%, 100% { transform: scale(1) rotate(0deg); }
+  50% { transform: scale(1.1) rotate(3deg); }
+}
+
+@keyframes nether-title-pulse {
+  0% { opacity: 0; transform: scale(0.8); }
+  25% { opacity: 1; transform: scale(1.03); }
+  75% { opacity: 1; transform: scale(1.06); }
+  100% { opacity: 0; transform: scale(1.2); }
+}

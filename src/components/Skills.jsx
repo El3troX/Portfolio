@@ -1,4 +1,5 @@
-import { useEffect, useRef } from 'react';
+import { useState, useRef } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
 import './Skills.css';
 
 /* ---- primary skills get the larger badge size ---- */
@@ -161,7 +162,6 @@ const DatabaseIcon = () => (
 
 const AiIcon = () => (
   <svg className="cat-icon cat-icon--ai" viewBox="0 0 60 50">
-    {/* Connections */}
     <g className="nn-links" fill="none" stroke="var(--text-muted)" strokeWidth="1" opacity="0.5">
       <path d="M 10,10 L 30,15 M 10,10 L 30,35" />
       <path d="M 10,25 L 30,15 M 10,25 L 30,35" />
@@ -169,7 +169,6 @@ const AiIcon = () => (
       <path d="M 30,15 L 50,25" />
       <path d="M 30,35 L 50,25" />
     </g>
-    {/* Flowing Data */}
     <g className="nn-data-flow" fill="none" stroke="var(--neon-pink, #ff2d6b)" strokeWidth="2" strokeDasharray="4 20">
       <path className="data-flow-slow" d="M 10,10 L 30,15 M 10,10 L 30,35" />
       <path className="data-flow-slow" d="M 10,25 L 30,15 M 10,25 L 30,35" />
@@ -177,7 +176,6 @@ const AiIcon = () => (
       <path className="data-flow-fast" d="M 30,15 L 50,25" />
       <path className="data-flow-fast" d="M 30,35 L 50,25" />
     </g>
-    {/* Nodes */}
     <g className="nn-nodes" fill="var(--bg-elevated, #1a1a1a)" stroke="var(--neon-pink, #ff2d6b)" strokeWidth="2">
       <circle cx="10" cy="10" r="3" />
       <circle cx="10" cy="25" r="3" />
@@ -202,10 +200,6 @@ const getCatIcon = (key) => {
   }
 };
 
-/**
- * Deterministic-ish pseudo-random from a seed string.
- * Keeps rotations & delays consistent across renders.
- */
 function seededRandom(seed) {
   let h = 0;
   for (let i = 0; i < seed.length; i++) {
@@ -220,79 +214,107 @@ function seededRandom(seed) {
 }
 
 export default function Skills() {
+  const [selectedFilter, setSelectedFilter] = useState('all');
   const sectionRef = useRef(null);
 
-  useEffect(() => {
-    const el = sectionRef.current;
-    if (!el) return;
+  const filters = [
+    { key: 'all', label: 'All Arsenal' },
+    { key: 'ai', label: 'AI/ML & Data' },
+    { key: 'languages', label: 'Languages' },
+    { key: 'frontend', label: 'Frontend' },
+    { key: 'backend', label: 'Backend' },
+    { key: 'cloud', label: 'Cloud' },
+    { key: 'tools', label: 'Tools' },
+  ];
 
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          el.classList.add('visible');
-          observer.unobserve(el);
-        }
-      },
-      { threshold: 0.1 }
-    );
-
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, []);
-
-  /* global badge counter for staggered reveal timing */
-  let badgeIndex = 0;
+  const displayedCategories =
+    selectedFilter === 'all'
+      ? CATEGORIES
+      : CATEGORIES.filter((c) => c.key === selectedFilter);
 
   return (
-    <section id="skills" className="skills" ref={sectionRef}>
+    <motion.section
+      id="skills"
+      className="skills"
+      ref={sectionRef}
+      initial={{ opacity: 0, y: 40 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '-80px' }}
+      transition={{ duration: 0.7 }}
+    >
       <h2 className="skills__title">
         TECH <span className="skills__title-accent">ARSENAL</span>
       </h2>
 
-      {CATEGORIES.map((cat) => (
-        <div
-          key={cat.key}
-          className={`skills__category skills__category--${cat.key}`}
-        >
-          <h3
-            className="skills__cat-header"
-            style={{ '--header-rotate': cat.headerRotate }}
+      {/* Category Quick Filter */}
+      <div className="skills__filters" style={{ display: 'flex', flexWrap: 'wrap', gap: '0.6rem', justifyContent: 'center', marginBottom: '3rem' }}>
+        {filters.map((f) => (
+          <button
+            key={f.key}
+            onClick={() => setSelectedFilter(f.key)}
+            className={`skills__filter-btn monospace ${selectedFilter === f.key ? 'active' : ''}`}
+            style={{
+              background: selectedFilter === f.key ? 'var(--neon-lime)' : 'rgba(255, 255, 255, 0.04)',
+              color: selectedFilter === f.key ? 'var(--bg-void)' : 'var(--text-muted)',
+              border: '1px solid ' + (selectedFilter === f.key ? 'var(--neon-lime)' : 'rgba(255, 255, 255, 0.1)'),
+              padding: '0.45rem 1.1rem',
+              borderRadius: '9999px',
+              cursor: 'pointer',
+              fontWeight: 700,
+              fontSize: '0.85rem',
+              transition: 'all 0.2s ease',
+            }}
           >
-            {getCatIcon(cat.key)}
-            <span className="skills__cat-label">{cat.label}</span>
-          </h3>
+            {f.label}
+          </button>
+        ))}
+      </div>
 
-          <div className="skills__badges">
-            {cat.skills.map((skill) => {
-              const rng = seededRandom(skill + cat.key);
-              const rotation = (rng() * 6 - 3).toFixed(1);       // -3 to 3 deg
-              const floatDelay = (rng() * 3).toFixed(2);          // 0–3s
-              const revealDelay = (badgeIndex * 0.04).toFixed(2);  // stagger 40ms
-              const floatStart = (parseFloat(revealDelay) + 0.5).toFixed(2);
-              const isPrimary = PRIMARY.has(skill);
+      <AnimatePresence mode="popLayout">
+        {displayedCategories.map((cat) => (
+          <motion.div
+            key={cat.key}
+            layout
+            initial={{ opacity: 0, scale: 0.98 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.98 }}
+            transition={{ duration: 0.3 }}
+            className={`skills__category skills__category--${cat.key}`}
+          >
+            <h3
+              className="skills__cat-header"
+              style={{ '--header-rotate': cat.headerRotate }}
+            >
+              {getCatIcon(cat.key)}
+              <span className="skills__cat-label">{cat.label}</span>
+            </h3>
 
-              badgeIndex++;
+            <div className="skills__badges">
+              {cat.skills.map((skill, idx) => {
+                const rng = seededRandom(skill + cat.key);
+                const rotation = (rng() * 4 - 2).toFixed(1);
+                const isPrimary = PRIMARY.has(skill);
 
-              return (
-                <span
-                  key={skill}
-                  className={`skills__badge ${
-                    isPrimary ? 'skills__badge--primary' : 'skills__badge--secondary'
-                  }`}
-                  style={{
-                    '--r': `${rotation}deg`,
-                    '--delay': `${floatDelay}s`,
-                    '--reveal': `${revealDelay}s`,
-                    '--float-start': `${floatStart}s`,
-                  }}
-                >
-                  {skill}
-                </span>
-              );
-            })}
-          </div>
-        </div>
-      ))}
-    </section>
+                return (
+                  <motion.span
+                    key={skill}
+                    className={`skills__badge ${
+                      isPrimary ? 'skills__badge--primary' : 'skills__badge--secondary'
+                    }`}
+                    initial={{ opacity: 0, y: 15, rotate: parseFloat(rotation) }}
+                    animate={{ opacity: 1, y: 0, rotate: parseFloat(rotation) }}
+                    transition={{ duration: 0.3, delay: idx * 0.02 }}
+                    whileHover={{ scale: 1.12, y: -4, rotate: 0, zIndex: 10 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    {skill}
+                  </motion.span>
+                );
+              })}
+            </div>
+          </motion.div>
+        ))}
+      </AnimatePresence>
+    </motion.section>
   );
 }

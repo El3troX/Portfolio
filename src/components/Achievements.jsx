@@ -1,4 +1,6 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
+import MetricsDashboard from './MetricsDashboard';
 import './Achievements.css';
 
 /* ---- Stats Data ---- */
@@ -46,7 +48,7 @@ const leadership = [
 ];
 
 /* ---- Animated Counter Hook ---- */
-function useCountUp(targetValue, decimals, shouldAnimate, duration = 2000) {
+function useCountUp(targetValue, decimals, shouldAnimate, duration = 1800) {
   const [displayValue, setDisplayValue] = useState(0);
   const rafRef = useRef(null);
   const startTimeRef = useRef(null);
@@ -59,7 +61,6 @@ function useCountUp(targetValue, decimals, shouldAnimate, duration = 2000) {
       const elapsed = timestamp - startTimeRef.current;
       const progress = Math.min(elapsed / duration, 1);
 
-      // Ease-out cubic for smooth deceleration
       const eased = 1 - Math.pow(1 - progress, 3);
       const current = eased * targetValue;
 
@@ -118,8 +119,10 @@ function StatBlock({ stat, index, isVisible }) {
   }, [isVisible, stat.special, specialRevealed]);
 
   return (
-    <article
+    <motion.article
       className={`stat-block ${isVisible ? 'stat-block--visible' : ''}`}
+      whileHover={{ scale: 1.05, y: -4 }}
+      transition={{ type: 'spring', stiffness: 350, damping: 20 }}
     >
       <div className={`stat-number stat-color-${index} ${stat.special ? 'stat-number--special' : ''}`}>
         {stat.special ? (
@@ -132,61 +135,31 @@ function StatBlock({ stat, index, isVisible }) {
         )}
       </div>
       <div className="stat-label">{stat.label}</div>
-    </article>
+    </motion.article>
   );
 }
 
 /* ---- Main Achievements Component ---- */
 export default function Achievements() {
-  const statsRef = useRef(null);
-  const cardsRef = useRef(null);
+  const [activeTab, setActiveTab] = useState('all');
   const [statsVisible, setStatsVisible] = useState(false);
-  const [cardsVisible, setCardsVisible] = useState(false);
-
-  useEffect(() => {
-    const observers = [];
-
-    /* Observe stats grid */
-    if (statsRef.current) {
-      const statsObserver = new IntersectionObserver(
-        ([entry]) => {
-          if (entry.isIntersecting) {
-            setStatsVisible(true);
-            statsObserver.disconnect();
-          }
-        },
-        { threshold: 0.2 }
-      );
-      statsObserver.observe(statsRef.current);
-      observers.push(statsObserver);
-    }
-
-    /* Observe cards section */
-    if (cardsRef.current) {
-      const cardsObserver = new IntersectionObserver(
-        ([entry]) => {
-          if (entry.isIntersecting) {
-            setCardsVisible(true);
-            cardsObserver.disconnect();
-          }
-        },
-        { threshold: 0.15 }
-      );
-      cardsObserver.observe(cardsRef.current);
-      observers.push(cardsObserver);
-    }
-
-    return () => observers.forEach((obs) => obs.disconnect());
-  }, []);
 
   return (
-    <section id="achievements" className="achievements-section">
+    <motion.section
+      id="achievements"
+      className="achievements-section"
+      initial={{ opacity: 0, y: 40 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '-80px' }}
+      onViewportEnter={() => setStatsVisible(true)}
+      transition={{ duration: 0.7 }}
+    >
       <h2 className="achievements-title">
         <span className="achievements-title-accent">ACHIEVE</span>MENTS
       </h2>
 
       {/* Stats Grid */}
-      <div className="stats-grid" ref={statsRef}>
+      <div className="stats-grid">
         {stats.map((stat, i) => (
           <StatBlock
             key={i}
@@ -197,46 +170,95 @@ export default function Achievements() {
         ))}
       </div>
 
-      {/* Cards (Hackathons + Leadership) */}
-      <div className="cards-section" ref={cardsRef}>
-        {/* Hackathons */}
-        <h3 className="cards-section-title cards-section-title--hackathons">
-          Hackathons
-        </h3>
-        <div className="cards-grid">
-          {hackathons.map((hack, i) => (
-            <article
-              key={i}
-              className={`achievement-card achievement-card--hackathon ${
-                cardsVisible ? 'achievement-card--visible' : ''
-              }`}
-            >
-              <h4 className="card-name">{hack.name}</h4>
-              <span className="card-year">{hack.year}</span>
-              <p className="card-description">{hack.description}</p>
-            </article>
-          ))}
-        </div>
-
-        {/* Leadership */}
-        <h3 className="cards-section-title cards-section-title--leadership">
-          Leadership
-        </h3>
-        <div className="cards-grid cards-grid--leadership">
-          {leadership.map((lead, i) => (
-            <article
-              key={i}
-              className={`achievement-card achievement-card--leadership ${
-                cardsVisible ? 'achievement-card--visible' : ''
-              }`}
-            >
-              <h4 className="card-name">{lead.name}</h4>
-              <span className="card-year">{lead.year}</span>
-              <p className="card-description">{lead.description}</p>
-            </article>
-          ))}
-        </div>
+      {/* Tab Controls */}
+      <div style={{ display: 'flex', justifyContent: 'center', gap: '0.6rem', margin: '3.5rem 0 2rem' }}>
+        {[
+          { id: 'all', label: 'All Highlights' },
+          { id: 'hackathons', label: 'Hackathons' },
+          { id: 'leadership', label: 'Leadership' },
+        ].map((tab) => (
+          <button
+            key={tab.id}
+            onClick={() => setActiveTab(tab.id)}
+            className="monospace"
+            style={{
+              background: activeTab === tab.id ? 'var(--neon-pink)' : 'rgba(255, 255, 255, 0.04)',
+              color: activeTab === tab.id ? '#fff' : 'var(--text-muted)',
+              border: '1px solid ' + (activeTab === tab.id ? 'var(--neon-pink)' : 'rgba(255, 255, 255, 0.1)'),
+              padding: '0.45rem 1.2rem',
+              borderRadius: '9999px',
+              cursor: 'pointer',
+              fontWeight: 700,
+              fontSize: '0.85rem',
+              transition: 'all 0.2s ease',
+            }}
+          >
+            {tab.label}
+          </button>
+        ))}
       </div>
-    </section>
+
+      {/* Cards Section */}
+      <div className="cards-section">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={activeTab}
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -15 }}
+            transition={{ duration: 0.25 }}
+          >
+            {/* Hackathons */}
+            {(activeTab === 'all' || activeTab === 'hackathons') && (
+              <div style={{ marginBottom: activeTab === 'all' ? '3rem' : '0' }}>
+                <h3 className="cards-section-title cards-section-title--hackathons">
+                  Hackathons
+                </h3>
+                <div className="cards-grid">
+                  {hackathons.map((hack, i) => (
+                    <motion.article
+                      key={i}
+                      className="achievement-card achievement-card--hackathon achievement-card--visible"
+                      whileHover={{ scale: 1.03, y: -4, boxShadow: '0 0 25px rgba(255, 45, 107, 0.25)' }}
+                      transition={{ type: 'spring', stiffness: 350, damping: 20 }}
+                    >
+                      <h4 className="card-name">{hack.name}</h4>
+                      <span className="card-year">{hack.year}</span>
+                      <p className="card-description">{hack.description}</p>
+                    </motion.article>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Leadership */}
+            {(activeTab === 'all' || activeTab === 'leadership') && (
+              <div>
+                <h3 className="cards-section-title cards-section-title--leadership">
+                  Leadership
+                </h3>
+                <div className="cards-grid cards-grid--leadership">
+                  {leadership.map((lead, i) => (
+                    <motion.article
+                      key={i}
+                      className="achievement-card achievement-card--leadership achievement-card--visible"
+                      whileHover={{ scale: 1.03, y: -4, boxShadow: '0 0 25px rgba(61, 90, 254, 0.25)' }}
+                      transition={{ type: 'spring', stiffness: 350, damping: 20 }}
+                    >
+                      <h4 className="card-name">{lead.name}</h4>
+                      <span className="card-year">{lead.year}</span>
+                      <p className="card-description">{lead.description}</p>
+                    </motion.article>
+                  ))}
+                </div>
+              </div>
+            )}
+          </motion.div>
+        </AnimatePresence>
+      </div>
+
+      {/* Bklit-style Composable Analytics & Benchmarks */}
+      <MetricsDashboard />
+    </motion.section>
   );
 }

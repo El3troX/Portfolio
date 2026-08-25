@@ -1,4 +1,6 @@
 import { useEffect, useRef } from 'react';
+import { motion } from 'motion/react';
+import AIPromptCard from './AIPromptCard';
 import './About.css';
 
 const STICKERS = [
@@ -12,25 +14,6 @@ export default function About() {
   const sectionRef = useRef(null);
   const stickersRef = useRef([]);
   const mouseRef = useRef({ x: -1000, y: -1000, isHovering: false });
-
-  // Intersection Observer for visibility
-  useEffect(() => {
-    const el = sectionRef.current;
-    if (!el) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          el.classList.add('visible');
-          observer.unobserve(el);
-        }
-      },
-      { threshold: 0.15 }
-    );
-
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, []);
 
   // Physics Loop
   useEffect(() => {
@@ -84,16 +67,16 @@ export default function About() {
           const rect = el.getBoundingClientRect();
           const centerX = rect.left + rect.width / 2;
           const centerY = rect.top + rect.height / 2;
-          
+
           const dx = centerX - mouse.x;
           const dy = centerY - mouse.y;
           const dist = Math.sqrt(dx * dx + dy * dy);
-          
+
           const repelRadius = 160;
           if (dist < repelRadius && dist > 0) {
             const force = (repelRadius - dist) / repelRadius;
-            p.vx += (dx / dist) * force * 3; // Push strength
-            p.vy += (dy / dist) * force * 3;
+            p.vx += (dx / dist) * force * 3.5;
+            p.vy += (dy / dist) * force * 3.5;
           }
         }
       }
@@ -109,7 +92,7 @@ export default function About() {
 
           const rect1 = el1.getBoundingClientRect();
           const rect2 = el2.getBoundingClientRect();
-          
+
           const c1x = rect1.left + rect1.width / 2;
           const c1y = rect1.top + rect1.height / 2;
           const c2x = rect2.left + rect2.width / 2;
@@ -118,19 +101,18 @@ export default function About() {
           const dx = c1x - c2x;
           const dy = c1y - c2y;
           const dist = Math.sqrt(dx * dx + dy * dy);
-          
-          // Collision radius (rough approximation for rectangular stickers)
-          const minDist = 110; 
+
+          const minDist = 110;
           if (dist < minDist && dist > 0) {
-             const overlap = minDist - dist;
-             const force = overlap * 0.1; // Spring collision response
-             const nx = dx / dist;
-             const ny = dy / dist;
-             
-             p1.vx += nx * force;
-             p1.vy += ny * force;
-             p2.vx -= nx * force;
-             p2.vy -= ny * force;
+            const overlap = minDist - dist;
+            const force = overlap * 0.1;
+            const nx = dx / dist;
+            const ny = dy / dist;
+
+            p1.vx += nx * force;
+            p1.vy += ny * force;
+            p2.vx -= nx * force;
+            p2.vy -= ny * force;
           }
         }
       }
@@ -138,10 +120,9 @@ export default function About() {
       // 3. Update Positions & Friction
       for (let i = 0; i < particles.length; i++) {
         const p = particles[i];
-        // Friction / Drag
-        p.vx *= 0.88; 
+        p.vx *= 0.88;
         p.vy *= 0.88;
-        
+
         p.x += p.vx;
         p.y += p.vy;
 
@@ -167,7 +148,15 @@ export default function About() {
   }, []);
 
   return (
-    <section id="about" className="about" ref={sectionRef}>
+    <motion.section
+      id="about"
+      className="about"
+      ref={sectionRef}
+      initial={{ opacity: 0, y: 40 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '-80px' }}
+      transition={{ duration: 0.7, ease: 'easeOut' }}
+    >
       <h2 className="about__title">
         ABOUT <span className="about__title-accent">ME</span>
       </h2>
@@ -175,11 +164,15 @@ export default function About() {
       <div className="about__grid">
         {/* -------- Avatar Column -------- */}
         <div className="about__avatar-wrap">
-          <div className="about__avatar">
+          <motion.div
+            className="about__avatar"
+            whileHover={{ scale: 1.05, rotate: 0 }}
+            transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+          >
             <div className="about__avatar-inner">
               <img src="/profile.jpg" alt="Divyam Pandey" className="about__avatar-img" />
             </div>
-          </div>
+          </motion.div>
         </div>
 
         {/* -------- Decorative Arrow -------- */}
@@ -212,7 +205,11 @@ export default function About() {
           </p>
 
           {/* Education terminal */}
-          <div className="about__education">
+          <motion.div
+            className="about__education"
+            whileHover={{ borderColor: 'var(--neon-lime)', boxShadow: '0 0 15px rgba(184, 255, 0, 0.15)' }}
+            transition={{ duration: 0.2 }}
+          >
             <p className="about__edu-command">$ cat education.txt</p>
             <pre className="about__edu-output">
               <span className="edu-label">degree  </span>
@@ -224,7 +221,7 @@ export default function About() {
               <span className="edu-label">cgpa    </span>
               <span className="edu-cgpa">9.09 / 10</span>
             </pre>
-          </div>
+          </motion.div>
 
           {/* Floating sticker labels */}
           <div className="about__stickers" aria-label="Role labels">
@@ -240,6 +237,9 @@ export default function About() {
           </div>
         </div>
       </div>
-    </section>
+
+      {/* Kokonut-style Interactive AI Agent Bento Card */}
+      <AIPromptCard />
+    </motion.section>
   );
 }

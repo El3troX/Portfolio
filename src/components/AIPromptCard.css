@@ -1,0 +1,200 @@
+.kokonut-bento-card {
+  position: relative;
+  background: var(--bg-dark, #111111);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 14px;
+  padding: 1.75rem 2rem;
+  max-width: 1000px;
+  margin: 3rem auto 0;
+  overflow: hidden;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+}
+
+.kokonut-card-glow {
+  position: absolute;
+  top: -50px;
+  right: -50px;
+  width: 200px;
+  height: 200px;
+  background: radial-gradient(circle, rgba(255, 45, 107, 0.15), transparent 70%);
+  pointer-events: none;
+}
+
+.kokonut-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.25rem;
+}
+
+.kokonut-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.78rem;
+  color: var(--neon-pink);
+  background: rgba(255, 45, 107, 0.1);
+  padding: 0.25rem 0.65rem;
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 45, 107, 0.25);
+}
+
+.kokonut-sparkle-icon {
+  animation: spin-sparkle 6s linear infinite;
+}
+
+@keyframes spin-sparkle {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.kokonut-model-tag {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.kokonut-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.kokonut-chip {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.78rem;
+  padding: 0.35rem 0.8rem;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text-muted);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.kokonut-chip:hover {
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.kokonut-chip.active {
+  color: #fff;
+  background: rgba(255, 45, 107, 0.2);
+  border-color: var(--neon-pink);
+  box-shadow: 0 0 12px rgba(255, 45, 107, 0.25);
+  font-weight: 700;
+}
+
+.kokonut-terminal-view {
+  background: rgba(10, 10, 10, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 8px;
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.kokonut-query-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  color: var(--neon-lime);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.85rem;
+  margin-bottom: 0.85rem;
+  padding-bottom: 0.6rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.kokonut-answer-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.kokonut-bot-icon {
+  color: var(--electric-cyan);
+  flex-shrink: 0;
+  margin-top: 0.2rem;
+}
+
+.kokonut-answer-content {
+  flex: 1;
+}
+
+.kokonut-answer-text {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--text-primary);
+  margin: 0 0 0.6rem 0;
+}
+
+.kokonut-cursor {
+  color: var(--neon-pink);
+  animation: blink 0.8s infinite;
+  margin-left: 2px;
+}
+
+.kokonut-verified-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  color: var(--neon-lime);
+  opacity: 0.85;
+}
+
+.kokonut-input-bar {
+  display: flex;
+  align-items: center;
+  background: rgba(10, 10, 10, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  padding: 0.35rem 0.5rem 0.35rem 1rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.kokonut-input-bar:focus-within {
+  border-color: var(--neon-pink);
+  box-shadow: 0 0 15px rgba(255, 45, 107, 0.2);
+}
+
+.kokonut-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: var(--text-primary);
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.9rem;
+  outline: none;
+}
+
+.kokonut-input::placeholder {
+  color: var(--text-muted);
+}
+
+.kokonut-send-btn {
+  background: var(--neon-pink);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.kokonut-send-btn:hover {
+  background: #ff4785;
+}
+
+@media (max-width: 768px) {
+  .kokonut-bento-card {
+    padding: 1.25rem 1rem;
+  }
+}
