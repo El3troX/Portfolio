@@ -111,9 +111,9 @@ const PROJECTS = [
       'Handles 5 transaction types across 8 normalized MySQL tables. Built as a lightweight, performant credit management system for campus bus services.',
     tech: ['HTML', 'CSS', 'JavaScript', 'MySQL'],
     date: 'Sept 2024',
-    github: 'https://github.com/El3troX/BUSIT',
-    repoName: 'BUSIT',
-    cloneUrl: 'https://github.com/El3troX/BUSIT.git',
+    github: 'https://github.com/El3troX/BCS',
+    repoName: 'BCS',
+    cloneUrl: 'https://github.com/El3troX/BCS.git',
     color: 'var(--neon-lime)',
   },
 ];
