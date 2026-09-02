@@ -79,21 +79,16 @@ export class ExperienceSection {
         </h2>
 
         <!-- Experience HUD Timeline -->
-        <div style="display: flex; flex-direction: column; gap: 2rem;">
+        <div style="display: flex; flex-direction: column; gap: var(--space-5);">
           ${this.experiences.map((exp, idx) => {
-            const catColor = 'var(--cat-rag-agentic)';
+            const catClass = idx === 0 ? 'pill--rag-agentic' : 'pill--rag-agentic';
 
             return `
-              <div class="exp-hud-card" style="
-                padding: 1.5rem 1.75rem;
-                background: rgba(19, 19, 28, 0.75);
-                backdrop-filter: blur(12px);
-                border: 1px solid var(--line);
-                border-left: 3px solid ${catColor};
-                border-radius: 8px;
+              <div class="glass-card exp-hud-card" style="
+                border-left: 3px solid var(--cat-rag-agentic);
                 display: flex;
                 flex-direction: column;
-                gap: 1rem;
+                gap: var(--space-4);
               ">
                 <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 0.5rem;">
                   <div>
@@ -111,15 +106,7 @@ export class ExperienceSection {
                     </div>
                   </div>
 
-                  <div style="
-                    font-family: var(--font-mono);
-                    font-size: 0.8rem;
-                    color: var(--glow);
-                    background: rgba(35, 35, 48, 0.6);
-                    padding: 0.3rem 0.65rem;
-                    border-radius: 4px;
-                    border: 1px solid var(--line);
-                  ">
+                  <div class="pill">
                     ${exp.duration}
                   </div>
                 </div>
@@ -138,28 +125,18 @@ export class ExperienceSection {
                 ">
                   ${exp.highlights.map((bullet) => `
                     <li style="display: flex; align-items: flex-start; gap: 0.6rem;">
-                      <span style="color: ${catColor}; font-family: var(--font-mono);">&bull;</span>
+                      <span style="color: var(--cat-rag-agentic); font-family: var(--font-mono); font-size: 0.85rem;">&bull;</span>
                       <span>${bullet}</span>
                     </li>
                   `).join('')}
                 </ul>
 
-                <div style="display: flex; flex-wrap: wrap; gap: 0.45rem; margin-top: 0.25rem;">
-                  ${exp.tech.map((t) => {
-                    const tagColor = this.getCategoryColorForTech(t);
-                    return `
-                      <span style="
-                        font-family: var(--font-mono);
-                        font-size: 0.75rem;
-                        padding: 0.25rem 0.6rem;
-                        background: rgba(35, 35, 48, 0.5);
-                        border: 1px solid var(--line);
-                        border-left: 2px solid ${tagColor};
-                        border-radius: 4px;
-                        color: var(--text-primary);
-                      ">${t}</span>
-                    `;
-                  }).join('')}
+                <div style="display: flex; flex-wrap: wrap; gap: 0.45rem; padding-top: var(--space-3); border-top: 1px solid var(--line);">
+                  ${(exp.tech || exp.technologies || []).map((tech) => `
+                    <span class="pill pill--interactive">
+                      ${tech}
+                    </span>
+                  `).join('')}
                 </div>
               </div>
             `;

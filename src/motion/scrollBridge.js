@@ -1,6 +1,8 @@
 /**
- * scrollBridge - Generic scroll manager across all 10 portfolio sections.
- * Guarantees zero leftover renderer/camera state bleeding across scene transitions.
+ * scrollBridge - DOM-measured scroll manager across all portfolio sections.
+ * Dynamically measures real section bounding client rects and viewport center crossing
+ * to guarantee camera waypoints, scene visibility, and transitions stay perfectly in sync
+ * regardless of content height, screen size, or zoom level.
  */
 export class ScrollBridge {
   constructor({
@@ -30,18 +32,67 @@ export class ScrollBridge {
     this.aboutSection = aboutSection;
     this.flagshipSection = flagshipSection;
 
-    this.scenes = [
-      this.neuralSphere,
-      this.experienceRoad,
-      this.skillsCloud,
-      this.vidhanScene,
-      this.valkyrieScene,
-      this.washSaleScene,
-      this.tixRushScene,
-      this.lightTemplateScene,
+    this.sceneMap = {
+      neuralSphere: this.neuralSphere,
+      experienceRoad: this.experienceRoad,
+      skillsCloud: this.skillsCloud,
+      vidhanScene: this.vidhanScene,
+      valkyrieScene: this.valkyrieScene,
+      washSaleScene: this.washSaleScene,
+      tixRushScene: this.tixRushScene,
+      lightTemplateScene: this.lightTemplateScene,
+    };
+
+    this.scenes = Object.values(this.sceneMap);
+
+    // Section definitions matching exact DOM IDs and CameraRig waypoint keys
+    this.sectionConfigs = [
+      { id: 'hero-section', key: 'hero', sceneKey: 'neuralSphere' },
+      { id: 'about-section', key: 'about', sceneKey: 'experienceRoad' },
+      { id: 'experience-section', key: 'experience', sceneKey: 'experienceRoad' },
+      { id: 'skills-section', key: 'skills', sceneKey: 'skillsCloud' },
+      { id: 'project-vidhan-ai', key: 'flagship-vidhan', sceneKey: 'vidhanScene' },
+      { id: 'project-valkyrie-aml', key: 'flagship-valkyrie', sceneKey: 'valkyrieScene' },
+      { id: 'project-wash-sale', key: 'flagship-washsale', sceneKey: 'washSaleScene' },
+      { id: 'project-tixrush', key: 'flagship-tixrush', sceneKey: 'tixRushScene' },
+      { id: 'projects-standard-strip', key: 'standard-strip', sceneKey: 'lightTemplateScene' },
+      { id: 'extras-section', key: 'extras', sceneKey: null },
+      { id: 'contact-section', key: 'contact', sceneKey: null },
     ];
 
+    // State tracking
+    this.activeSectionIndex = 0;
+    this.activeSectionKey = 'hero';
+    this.activeSectionId = 'hero-section';
+    this.listeners = new Set();
+
+    // One-shot triggers
+    this.hasTriggeredNdcg = false;
+    this.hasTriggeredValkyrie = false;
+
+    // Intersection ratios map
+    this.intersectionRatios = new Map();
+
     this.init();
+  }
+
+  onSectionChange(cb) {
+    if (typeof cb === 'function') {
+      this.listeners.add(cb);
+      // Immediately invoke with initial state
+      cb(this.activeSectionKey, this.activeSectionId, 0);
+    }
+    return () => this.listeners.delete(cb);
+  }
+
+  notifyListeners(globalProgress) {
+    for (const cb of this.listeners) {
+      try {
+        cb(this.activeSectionKey, this.activeSectionId, globalProgress);
+      } catch (err) {
+        console.error('[ScrollBridge] Error in section change listener:', err);
+      }
+    }
   }
 
   hideAllScenesExcept(activeScene) {
@@ -53,110 +104,130 @@ export class ScrollBridge {
   }
 
   init() {
-    const handleScroll = () => {
-      const scrollY = window.scrollY || window.pageYOffset;
-      const vh = window.innerHeight;
-
-      if (scrollY <= vh * 1.0) {
-        // --- 1. HERO ---
-        const heroProgress = Math.min(1.0, Math.max(0.0, scrollY / (vh * 1.0)));
-        this.cameraRig.setScrollState(0, 'hero', heroProgress);
-
-        this.hideAllScenesExcept(this.neuralSphere);
-        this.neuralSphere.group.visible = heroProgress < 0.98;
-        this.neuralSphere.setDissolution(heroProgress);
-        this.particleField.setDiveProgress(heroProgress);
-
-        if (heroProgress >= 0.85 && this.aboutSection) {
-          this.aboutSection.triggerHeadlineReveal();
-        }
-
-      } else if (scrollY > vh * 1.0 && scrollY <= vh * 2.0) {
-        // --- 2. ABOUT ---
-        const aboutProgress = Math.min(1.0, Math.max(0.0, (scrollY - vh * 1.0) / (vh * 1.0)));
-        this.cameraRig.setScrollState(0.1, 'about', aboutProgress);
-
-        this.hideAllScenesExcept(this.experienceRoad);
-        this.particleField.setDiveProgress(1.0);
-
-        if (this.aboutSection) {
-          this.aboutSection.triggerHeadlineReveal();
-        }
-
-      } else if (scrollY > vh * 2.0 && scrollY <= vh * 3.2) {
-        // --- 3. EXPERIENCE ROAD ---
-        const expProgress = Math.min(1.0, Math.max(0.0, (scrollY - vh * 2.0) / (vh * 1.2)));
-        this.cameraRig.setScrollState(0.2, 'experience', expProgress);
-
-        this.hideAllScenesExcept(this.experienceRoad);
-
-      } else if (scrollY > vh * 3.2 && scrollY <= vh * 4.4) {
-        // --- 4. SKILLS CLOUD ---
-        const skillsProgress = Math.min(1.0, Math.max(0.0, (scrollY - vh * 3.2) / (vh * 1.2)));
-        this.cameraRig.setScrollState(0.3, 'skills', skillsProgress);
-
-        this.hideAllScenesExcept(this.skillsCloud);
-
-      } else if (scrollY > vh * 4.4 && scrollY <= vh * 5.6) {
-        // --- 5. FLAGSHIP 01: VIDHAN-AI ---
-        const vProgress = Math.min(1.0, Math.max(0.0, (scrollY - vh * 4.4) / (vh * 1.2)));
-        this.cameraRig.setScrollState(0.4, 'flagship-vidhan', vProgress);
-
-        this.hideAllScenesExcept(this.vidhanScene);
-        if (this.flagshipSection) {
-          this.flagshipSection.triggerNdcgAnimation();
-        }
-
-      } else if (scrollY > vh * 5.6 && scrollY <= vh * 6.8) {
-        // --- 6. FLAGSHIP 02: VALKYRIE-AML ---
-        const valkProgress = Math.min(1.0, Math.max(0.0, (scrollY - vh * 5.6) / (vh * 1.2)));
-        this.cameraRig.setScrollState(0.5, 'flagship-valkyrie', valkProgress);
-
-        this.hideAllScenesExcept(this.valkyrieScene);
-        if (this.valkyrieScene && !this.valkyrieScene.hasPropagated) {
-          this.valkyrieScene.startPropagationSequence();
-        }
-
-      } else if (scrollY > vh * 6.8 && scrollY <= vh * 8.0) {
-        // --- 7. FLAGSHIP 03: WASH SALE AUDITOR ---
-        const wsProgress = Math.min(1.0, Math.max(0.0, (scrollY - vh * 6.8) / (vh * 1.2)));
-        this.cameraRig.setScrollState(0.6, 'flagship-washsale', wsProgress);
-
-        this.hideAllScenesExcept(this.washSaleScene);
-
-      } else if (scrollY > vh * 8.0 && scrollY <= vh * 9.2) {
-        // --- 8. FLAGSHIP 04: TIXRUSH ---
-        const tixProgress = Math.min(1.0, Math.max(0.0, (scrollY - vh * 8.0) / (vh * 1.2)));
-        this.cameraRig.setScrollState(0.7, 'flagship-tixrush', tixProgress);
-
-        this.hideAllScenesExcept(this.tixRushScene);
-
-      } else if (scrollY > vh * 9.2 && scrollY <= vh * 10.4) {
-        // --- 9. STANDARD PROJECT STRIP ---
-        const stripProgress = Math.min(1.0, Math.max(0.0, (scrollY - vh * 9.2) / (vh * 1.2)));
-        this.cameraRig.setScrollState(0.8, 'standard-strip', stripProgress);
-
-        this.hideAllScenesExcept(this.lightTemplateScene);
-
-      } else if (scrollY > vh * 10.4 && scrollY <= vh * 11.4) {
-        // --- 10. EXTRAS (HONORS & CERTIFICATIONS) ---
-        const extrasProgress = Math.min(1.0, Math.max(0.0, (scrollY - vh * 10.4) / (vh * 1.0)));
-        this.cameraRig.setScrollState(0.9, 'extras', extrasProgress);
-
-        this.hideAllScenesExcept(null);
-        this.particleField.setDiveProgress(1.0);
-
-      } else {
-        // --- 11. CONTACT TERMINAL ---
-        const contactProgress = Math.min(1.0, Math.max(0.0, (scrollY - vh * 11.4) / (vh * 1.0)));
-        this.cameraRig.setScrollState(1.0, 'contact', contactProgress);
-
-        this.hideAllScenesExcept(null);
-        this.particleField.setDiveProgress(1.0);
-      }
+    // Setup IntersectionObserver for robust section detection
+    const observerOptions = {
+      root: null,
+      threshold: [0, 0.15, 0.3, 0.5, 0.7, 0.85, 1.0],
     };
 
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    handleScroll();
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        this.intersectionRatios.set(entry.target.id, entry.intersectionRatio);
+      });
+      this.updateScroll();
+    }, observerOptions);
+
+    this.sectionConfigs.forEach((cfg) => {
+      const el = document.getElementById(cfg.id);
+      if (el) observer.observe(el);
+    });
+
+    const onScroll = () => {
+      this.updateScroll();
+    };
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll, { passive: true });
+
+    // Initial pass after DOM settle
+    requestAnimationFrame(() => this.updateScroll());
+  }
+
+  updateScroll() {
+    const vh = window.innerHeight;
+    const scrollY = window.scrollY || window.pageYOffset;
+    const viewportCenter = vh * 0.5;
+
+    // Measure all sections in the DOM
+    const measurements = this.sectionConfigs.map((cfg, idx) => {
+      const el = document.getElementById(cfg.id);
+      if (!el) {
+        return { cfg, idx, rect: null, progress: 0, containsCenter: false };
+      }
+      const rect = el.getBoundingClientRect();
+      const containsCenter = rect.top <= viewportCenter && rect.bottom >= viewportCenter;
+
+      let progress = 0;
+      if (cfg.key === 'hero') {
+        progress = Math.max(0, Math.min(1, scrollY / Math.max(1, rect.height)));
+      } else {
+        progress = Math.max(0, Math.min(1, (viewportCenter - rect.top) / Math.max(1, rect.height)));
+      }
+
+      return { cfg, idx, rect, progress, containsCenter };
+    });
+
+    // 1. Determine active section: section containing viewportCenter, or highest intersection ratio
+    let activeItem = measurements.find((m) => m.containsCenter);
+
+    if (!activeItem) {
+      // Fallback: pick section with highest intersection ratio or closest rect to center
+      let maxRatio = -1;
+      measurements.forEach((m) => {
+        const ratio = this.intersectionRatios.get(m.cfg.id) || 0;
+        if (ratio > maxRatio && m.rect) {
+          maxRatio = ratio;
+          activeItem = m;
+        }
+      });
+    }
+
+    // Default to first section if still not found
+    if (!activeItem || !activeItem.rect) {
+      activeItem = measurements[0];
+    }
+
+    const { cfg: activeCfg, idx: activeIdx, progress: sectionProgress } = activeItem;
+    const prevKey = this.activeSectionKey;
+
+    this.activeSectionIndex = activeIdx;
+    this.activeSectionKey = activeCfg.key;
+    this.activeSectionId = activeCfg.id;
+
+    // 2. Compute Global Progress (0.0 to 1.0)
+    const totalSections = this.sectionConfigs.length;
+    const globalProgress = Math.max(0, Math.min(1, (activeIdx + sectionProgress) / totalSections));
+
+    // 3. Notify CameraRig with exact DOM-measured values
+    this.cameraRig.setScrollState(globalProgress, activeCfg.key, sectionProgress);
+
+    // 4. Update Scene Visibility & Section Effects
+    const targetScene = activeCfg.sceneKey ? this.sceneMap[activeCfg.sceneKey] : null;
+
+    if (activeCfg.key === 'hero') {
+      this.hideAllScenesExcept(this.neuralSphere);
+      this.neuralSphere.group.visible = sectionProgress < 0.98;
+      this.neuralSphere.setDissolution(sectionProgress);
+      this.particleField.setDiveProgress(sectionProgress);
+
+      if (sectionProgress >= 0.85 && this.aboutSection) {
+        this.aboutSection.triggerHeadlineReveal();
+      }
+    } else {
+      this.hideAllScenesExcept(targetScene);
+      this.particleField.setDiveProgress(1.0);
+
+      if (activeCfg.key === 'about' && this.aboutSection) {
+        this.aboutSection.triggerHeadlineReveal();
+      }
+    }
+
+    // 5. Fire One-Shot Flagship Animations on section entry
+    if (activeCfg.key === 'flagship-vidhan' && !this.hasTriggeredNdcg) {
+      this.hasTriggeredNdcg = true;
+      if (this.flagshipSection) {
+        this.flagshipSection.triggerNdcgAnimation();
+      }
+    }
+
+    if (activeCfg.key === 'flagship-valkyrie' && !this.hasTriggeredValkyrie) {
+      this.hasTriggeredValkyrie = true;
+      if (this.valkyrieScene) {
+        this.valkyrieScene.startPropagationSequence();
+      }
+    }
+
+    // 6. Notify Nav & external subscribers
+    this.notifyListeners(globalProgress);
   }
 }

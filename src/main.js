@@ -14,6 +14,7 @@ import { ScrollBridge } from './motion/scrollBridge.js';
 import { LoadingScreen } from './ui/loading.js';
 import { CustomCursor } from './ui/cursor.js';
 import { SudoEasterEgg } from './easterEgg/sudo.js';
+import { NavigationBar } from './ui/nav.js';
 import { HeroSection } from './ui/sections/Hero.js';
 import { AboutSection } from './ui/sections/About.js';
 import { ExperienceSection } from './ui/sections/Experience.js';
@@ -46,6 +47,9 @@ async function bootstrap() {
 
     // 6. Fetch and validate portfolio data
     const portfolio = await loadPortfolio();
+
+    // Persistent Navigation HUD mounted directly to document.body
+    const navBar = new NavigationBar(portfolio);
 
     // 7. Hero NeuralSphere
     const neuralSphere = new NeuralSphere(portfolio);
@@ -94,8 +98,13 @@ async function bootstrap() {
     const heroSection = new HeroSection(appContainer);
     const aboutSection = new AboutSection(appContainer, portfolio);
     const experienceSection = new ExperienceSection(appContainer, portfolio);
-    const skillsSection = new SkillsSection(appContainer, portfolio);
-    const flagshipSection = new ProjectsFlagshipSection(appContainer, portfolio);
+    const skillsSection = new SkillsSection(appContainer, portfolio, skillsCloud);
+    const flagshipSection = new ProjectsFlagshipSection(appContainer, portfolio, {
+      vidhanScene,
+      valkyrieScene,
+      washSaleScene,
+      tixRushScene,
+    });
     const stripSection = new ProjectsStripSection(appContainer, portfolio, lightTemplateScene);
     const extrasSection = new ExtrasSection(appContainer, portfolio);
     const contactSection = new ContactSection(appContainer, portfolio);
@@ -125,6 +134,12 @@ async function bootstrap() {
       aboutSection,
       flagshipSection,
     });
+
+    // Connect ScrollBridge active section & scroll progress to NavigationBar HUD
+    scrollBridge.onSectionChange((sectionKey, sectionId, globalProgress) => {
+      navBar.updateActiveSection(sectionKey, globalProgress);
+    });
+
 
     // 20. Register 60fps render loop updates
     sceneManager.registerUpdate((delta, elapsedTime) => {

@@ -112,41 +112,23 @@ export class ProjectsStripSection {
           }
 
           return `
-            <div class="standard-project-card" data-index="${idx}" style="
+            <div class="glass-card glow-border standard-project-card" data-index="${idx}" style="
               flex: 0 0 380px;
               max-width: 380px;
               scroll-snap-align: start;
-              padding: 1.6rem 1.8rem;
-              background: rgba(19, 19, 28, 0.85);
-              backdrop-filter: blur(14px);
-              border: 1px solid var(--line);
               border-top: 3px solid ${catColor};
-              border-radius: 8px;
               display: flex;
               flex-direction: column;
               justify-content: space-between;
               gap: 1.25rem;
-              transition: transform 0.25s ease, border-color 0.25s ease;
             ">
               <div style="display: flex; flex-direction: column; gap: 0.85rem;">
                 <div style="display: flex; justify-content: space-between; align-items: center;">
-                  <span style="
-                    font-family: var(--font-mono);
-                    font-size: 0.72rem;
-                    text-transform: uppercase;
-                    letter-spacing: 0.05em;
-                    color: ${catColor};
-                  ">
+                  <span class="pill pill--${proj.category}">
                     ${catConfig ? catConfig.label : proj.category}
                   </span>
 
-                  <a href="${proj.repo}" target="_blank" rel="noopener noreferrer" style="
-                    font-family: var(--font-mono);
-                    font-size: 0.75rem;
-                    color: var(--text-secondary);
-                    text-decoration: none;
-                    transition: color 0.2s ease;
-                  " onmouseover="this.style.color='var(--text-primary)'" onmouseout="this.style.color='var(--text-secondary)'">
+                  <a href="${proj.repo}" target="_blank" rel="noopener noreferrer" class="pill pill--interactive" style="font-size: 0.75rem; color: var(--text-secondary);">
                     GitHub &rarr;
                   </a>
                 </div>
@@ -180,7 +162,7 @@ export class ProjectsStripSection {
                   padding: 0.75rem 1rem;
                   background: rgba(35, 35, 48, 0.45);
                   border: 1px solid var(--line);
-                  border-radius: 6px;
+                  border-radius: var(--radius-sm);
                 ">
                   <div style="font-family: var(--font-mono); font-size: 0.7rem; color: var(--text-secondary); text-transform: uppercase; margin-bottom: 0.2rem;">
                     ${highlightLabel}
@@ -193,15 +175,7 @@ export class ProjectsStripSection {
                 <!-- Tech Stack Pills -->
                 <div style="display: flex; flex-wrap: wrap; gap: 0.4rem;">
                   ${proj.stack.map((t) => `
-                    <span style="
-                      font-family: var(--font-mono);
-                      font-size: 0.72rem;
-                      padding: 0.2rem 0.55rem;
-                      background: rgba(35, 35, 48, 0.5);
-                      border: 1px solid var(--line);
-                      border-radius: 4px;
-                      color: var(--text-primary);
-                    ">${t}</span>
+                    <span class="pill" style="font-size: 0.72rem; padding: 0.15rem 0.5rem;">${t}</span>
                   `).join('')}
                 </div>
               </div>
@@ -209,6 +183,7 @@ export class ProjectsStripSection {
           `;
         }).join('')}
       </div>
+
     `;
 
     this.container.appendChild(this.element);
