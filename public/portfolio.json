@@ -1,0 +1,520 @@
+{
+    "meta": {
+        "name": "Divyam Pandey",
+        "tagline": "AI/ML Engineer | RAG & Agentic Systems | Full-Stack & Distributed Systems",
+        "email": "divyampandey845@gmail.com",
+        "phone": "+91 94798 65784",
+        "location": "Vellore Institute of Technology, Vellore, Tamil Nadu, India",
+        "github": "https://github.com/El3troX",
+        "linkedin": "https://linkedin.com/in/divyam-pandey-231449202",
+        "resumeUrl": "/resume.pdf",
+        "cgpa": "9.09/10.0"
+    },
+    "education": {
+        "institution": "Vellore Institute of Technology (VIT)",
+        "degree": "B.Tech, Computer Science & Engineering (Data Science)",
+        "timeline": "Aug 2023 - Present",
+        "cgpa": "9.09 / 10.0",
+        "coursework": [
+            "Machine Learning & Deep Learning",
+            "Information Retrieval (BM25, Learning-to-Rank, NDCG/MRR/MAP)",
+            "Natural Language Processing (Attention, BPE, Bi/Cross-Encoders)",
+            "AI & Multi-Agent Systems (CSP, MDPs, Agentic Loops)",
+            "Probability & Mathematical Statistics",
+            "Data Structures & Algorithms (Graph Algos, DP, Segment Trees)",
+            "Database Management Systems (ACID, MVCC, B-Tree Indexing)"
+        ]
+    },
+    "experience": [
+        {
+            "id": "ey-gds",
+            "company": "Ernst & Young Global Delivery Service (EY GDS)",
+            "title": "Intern",
+            "location": "Kochi, Kerala",
+            "duration": "June 2026 - July 2026",
+            "highlights": [
+                "Evaluated retrieval relevance, precision degradation, and ranking latency of production LLM search pipelines across distributed multi-tenant architectures",
+                "Applied engineering training in Deep Learning, NLP, Graph RAG, and Advanced RAG architectures",
+                "Benchmarked knowledge-grounded AI systems and semantic vector database clustering under enterprise workloads"
+            ],
+            "tech": [
+                "Deep Learning",
+                "NLP",
+                "Graph RAG",
+                "Advanced RAG",
+                "Vector Databases",
+                "Distributed Systems"
+            ]
+        },
+        {
+            "id": "mahindra",
+            "company": "Mahindra & Mahindra",
+            "title": "AI Intern",
+            "location": "Mumbai, Maharashtra",
+            "duration": "June 2025 - July 2025",
+            "highlights": [
+                "Engineered a RAG system using LangChain and vector embeddings, improving contextual accuracy and reducing hallucination in enterprise chatbots",
+                "Architected multi-step reasoning workflows with LangGraph enabling cross-session memory and dynamic tool-calling",
+                "Integrated real-time speech-to-text pipelines feeding contextualized inputs into LLM reasoning layers",
+                "Automated enterprise data flows using n8n and Model Context Protocol (MCP) for secure tool execution"
+            ],
+            "tech": [
+                "LangChain",
+                "LangGraph",
+                "Vector Embeddings",
+                "MCP",
+                "n8n",
+                "Python",
+                "FastAPI",
+                "WebSockets"
+            ]
+        }
+    ],
+    "categories": {
+        "rag-agentic": {
+            "label": "RAG & Agentic AI",
+            "color": "#a855f7"
+        },
+        "fullstack": {
+            "label": "Full-Stack & Systems",
+            "color": "#3b82f6"
+        },
+        "quant": {
+            "label": "Quant & Data Science",
+            "color": "#f97316"
+        },
+        "applied-ml": {
+            "label": "Applied ML & Control",
+            "color": "#22c55e"
+        }
+    },
+    "projects": [
+        {
+            "id": "vidhan-ai",
+            "name": "Vidhan-AI",
+            "subtitle": "Legal RAG with Learning-to-Rank",
+            "category": "rag-agentic",
+            "repo": "https://github.com/El3troX/vidhan_ai",
+            "tier": "flagship",
+            "stack": [
+                "LangChain",
+                "ChromaDB",
+                "BGE-large-1.5",
+                "PyTorch (RankNet)",
+                "LightGBM (LambdaRank)",
+                "BM25",
+                "React",
+                "Next.js",
+                "FastAPI"
+            ],
+            "problem": "Indian statutory law involves complex cross-references across statutes. Naive RAG fails because dense embeddings lose precise statutory citations and structure-aware legal context.",
+            "architecture": [
+                "Ingested 200+ statutory documents (~3,000 pages) into 1,390 structure-aware, citation-preserving chunks using ChromaDB + BGE-large-1.5",
+                "Hybrid retrieval: dense semantic search + sparse BM25 + exact statutory citation matching",
+                "2-stage Learning-to-Rank re-ranker using PyTorch RankNet and LightGBM LambdaRank over cosine similarity, BM25 scores, query-statute overlap, citation presence",
+                "Selected LightGBM LambdaRank for production for sub-millisecond CPU inference"
+            ],
+            "metrics": [
+                {
+                    "label": "Precision@3",
+                    "value": "+17.6%",
+                    "detail": "relative gain vs embedding-only baseline"
+                },
+                {
+                    "label": "MRR",
+                    "value": "+9.6%",
+                    "detail": "relative gain"
+                },
+                {
+                    "label": "nDCG@5",
+                    "value": "0.70 -> 0.83",
+                    "detail": "+18.2% absolute gain"
+                },
+                {
+                    "label": "Latency",
+                    "value": "<3.0s",
+                    "detail": "end-to-end per complex multi-statute query"
+                }
+            ],
+            "primaryMetricForNodeSize": 0.176
+        },
+        {
+            "id": "valkyrie-aml",
+            "name": "Valkyrie-AML",
+            "subtitle": "Agentic Anti-Money-Laundering Platform",
+            "category": "rag-agentic",
+            "repo": "https://github.com/El3troX/Valkyrie-AML",
+            "tier": "flagship",
+            "stack": [
+                "Next.js",
+                "FastAPI",
+                "LangGraph",
+                "scikit-learn",
+                "Random Forest",
+                "Isolation Forest",
+                "SHAP",
+                "NetworkX",
+                "Streamlit",
+                "Docker"
+            ],
+            "problem": "AML teams face massive alert volumes and 90%+ false-positive fatigue from legacy rule-based systems. Complex layering techniques require labor-intensive manual graph tracing.",
+            "architecture": [
+                "Random Forest + Isolation Forest trained on 200,000 transactions for zero-day anomaly detection",
+                "SHAP value computation per flagged transaction for regulatory explainability",
+                "NetworkX graph modeling of fund flows with Personalized PageRank and multi-hop cycle detection for structuring/mule accounts",
+                "8-tool LangGraph agent: TransactionRiskAnalyzer, GraphRiskPropagator, FundFlowTracer, AccountEntityResolver, SanctionListChecker, SARDraftingEngine, EvidenceAggregator, DeterministicFallbackHandler"
+            ],
+            "metrics": [
+                {
+                    "label": "F1 Score",
+                    "value": "82.7%",
+                    "detail": "73.0% precision, 95.3% recall over 200,000 transactions"
+                },
+                {
+                    "label": "SAR Generation",
+                    "value": "45 min -> <15s",
+                    "detail": "manual report generation time"
+                }
+            ],
+            "primaryMetricForNodeSize": 0.953
+        },
+        {
+            "id": "wash-sale-auditor",
+            "name": "Wash Sale Auditor",
+            "subtitle": "Multi-Broker Tax Loss Harvesting & IRC §1091 Engine",
+            "category": "quant",
+            "repo": "https://github.com/El3troX/wash-sale-auditor",
+            "tier": "flagship",
+            "stack": [
+                "Python 3.11",
+                "Streamlit",
+                "DuckDB",
+                "Plotly",
+                "Pandas",
+                "SEC EDGAR N-PORT XML Parser",
+                "PyTest",
+                "MyPy"
+            ],
+            "problem": "Under IRC §1091 and Rev. Rul. 2008-5, wash sales occur across substantially identical securities within a 61-day window. Brokerages don't communicate, creating hidden liabilities for multi-broker traders.",
+            "architecture": [
+                "Multi-broker ingestion: broker CSVs, OFX (SGML/XML), Plaid API with automated stock-split adjustments",
+                "3-tier substantially-identical equivalence engine: exact CUSIP/ticker match, benchmark index ETF mapping, SEC Form N-PORT constituent cosine similarity",
+                "61-day sliding-window FIFO matching engine linking loss sales to replacement lots across taxable and tax-advantaged accounts",
+                "Cost basis ledger: basis step-up for taxable accounts, permanent loss disallowance for IRA accounts (Rev. Rul. 2008-5), chained wash sale compounding",
+                "IRS Form 8949 CSV exporter with adjustment code W for TurboTax/TaxAct/Drake"
+            ],
+            "metrics": [
+                {
+                    "label": "Test Suite",
+                    "value": "50/50 passed",
+                    "detail": "IRS Publication 550 scenarios, TC-01 through TC-06"
+                }
+            ],
+            "primaryMetricForNodeSize": 1.0
+        },
+        {
+            "id": "tixrush",
+            "name": "TixRush",
+            "subtitle": "High-Concurrency Distributed Ticket Booking Platform",
+            "category": "fullstack",
+            "repo": "https://github.com/El3troX/ticket-booking-system",
+            "tier": "flagship",
+            "stack": [
+                "React 19",
+                "TypeScript",
+                "Node.js",
+                "Express",
+                "PostgreSQL",
+                "Redis",
+                "BullMQ",
+                "Socket.io",
+                "Tailwind CSS",
+                "Vite"
+            ],
+            "problem": "Flash-sale ticket drops generate massive concurrent read/write spikes, causing race conditions, double bookings, and inventory leakage during checkout abandonment.",
+            "architecture": [
+                "Atomic seat reservation via Redis Lua scripts with configurable TTL locks (e.g. 10-minute checkout window)",
+                "BullMQ workers auto-release locks and notify subscribers via WebSockets on timeout/failure",
+                "Socket.io room broadcasting for real-time seat state sync across all connected clients",
+                "PostgreSQL with strict transaction isolation for Venues, Screens, Shows, Seat Layouts, Bookings, Dynamic Pricing"
+            ],
+            "metrics": [
+                {
+                    "label": "Concurrency Control",
+                    "value": "Redis Lua + TTL",
+                    "detail": "atomic distributed seat locking"
+                }
+            ],
+            "primaryMetricForNodeSize": 0.6
+        },
+        {
+            "id": "marketpulse",
+            "name": "MarketPulse",
+            "subtitle": "NIFTY-50 Sentiment & Time-Series Forecasting",
+            "category": "quant",
+            "repo": "https://github.com/El3troX/MarketPulse",
+            "tier": "standard",
+            "stack": [
+                "R (v4.3+)",
+                "Shiny Dashboard",
+                "forecast",
+                "rugarch",
+                "tidyquant",
+                "quantmod",
+                "ggplot2",
+                "plotly"
+            ],
+            "problem": "Stock market forecasting models often overfit or fail to capture time-varying volatility clustering and macroeconomic sentiment shocks.",
+            "architecture": [
+                "5+ years of daily price data (~1,250 sessions) for NIFTY-50 index and constituents",
+                "Benchmarked ARIMA, SARIMA, ETS, and GARCH(1,1) models",
+                "6-fold expanding-window time-series cross-validation to prevent look-ahead leakage",
+                "Interactive Shiny dashboard with Plotly charts, ACF/PACF diagnostics, volatility forecasts"
+            ],
+            "metrics": [
+                {
+                    "label": "MAPE",
+                    "value": "10.7% - 12.0%",
+                    "detail": "GARCH vs other models, 30-day out-of-sample"
+                }
+            ],
+            "primaryMetricForNodeSize": 0.5
+        },
+        {
+            "id": "timetablegen",
+            "name": "TimetableGen / FFCS",
+            "subtitle": "Constraint Satisfaction Problem Scheduler",
+            "category": "fullstack",
+            "repo": "https://github.com/El3troX/FFCS",
+            "tier": "standard",
+            "stack": [
+                "React",
+                "TypeScript",
+                "Web Workers",
+                "Vite",
+                "Tailwind CSS"
+            ],
+            "problem": "VIT's Fully Flexible Credit System is an NP-hard scheduling problem where students must select courses and slots without clashes or excessive gaps.",
+            "architecture": [
+                "Local-first Web Worker CSP engine with backtracking, Forward Checking, and MRV heuristics off the main thread",
+                "Explores millions of combinatorial slot arrangements in milliseconds without locking the UI",
+                "Enforces slot clash elimination, faculty preference ranking, morning/afternoon distribution, credit boundaries"
+            ],
+            "metrics": [],
+            "primaryMetricForNodeSize": 0.4
+        },
+        {
+            "id": "blogit",
+            "name": "BlogIT",
+            "subtitle": "Gaming Blog Platform with Firebase & Azure OpenAI",
+            "category": "fullstack",
+            "repo": "https://github.com/El3troX/BlogIT",
+            "tier": "standard",
+            "stack": [
+                "MongoDB",
+                "Express",
+                "React",
+                "Node.js",
+                "TypeScript",
+                "Firebase Auth",
+                "Azure OpenAI (GPT-4)",
+                "Tiptap",
+                "Docker"
+            ],
+            "problem": "Content creators in gaming communities need rich interactive media editors paired with AI drafting tools that understand gaming terminology.",
+            "architecture": [
+                "Custom Tiptap editor supporting gaming markdown, code blocks, embeds, media attachments",
+                "Azure OpenAI integration for automated post outlining, summarization, SEO tag generation",
+                "Firebase Authentication paired with normalized MongoDB Atlas cluster and Express REST API",
+                "Containerized with Docker and CI/CD automation"
+            ],
+            "metrics": [
+                {
+                    "label": "API Response",
+                    "value": "<200ms",
+                    "detail": "99.8% uptime, 120+ active users"
+                }
+            ],
+            "primaryMetricForNodeSize": 0.45
+        },
+        {
+            "id": "vaultshare",
+            "name": "VaultShare",
+            "subtitle": "Cryptographic API-Driven File Sharing System",
+            "category": "fullstack",
+            "repo": "https://github.com/El3troX/vaultshare",
+            "tier": "standard",
+            "stack": [
+                "Node.js",
+                "Express",
+                "PostgreSQL",
+                "Multer",
+                "Crypto",
+                "REST APIs"
+            ],
+            "problem": "Secure, verifiable peer-to-peer file distribution without third-party cloud data hoarding.",
+            "architecture": [
+                "SHA-256 checksum generation on upload to verify data integrity on download",
+                "PostgreSQL metadata store for mime types, access permissions, download counters, expirations",
+                "Secure streaming via Express backpressure streams instead of buffering full payloads"
+            ],
+            "metrics": [],
+            "primaryMetricForNodeSize": 0.3
+        },
+        {
+            "id": "choke-controller",
+            "name": "Autonomous Oil Well Choke Controller",
+            "subtitle": "Intelligent Process Control",
+            "category": "applied-ml",
+            "repo": "https://github.com/El3troX/Autonomous-Oil-Well-Choke-Controller",
+            "tier": "standard",
+            "stack": [
+                "Python",
+                "NumPy",
+                "SciPy",
+                "Matplotlib",
+                "Control Systems Theory",
+                "Simulation Modeling"
+            ],
+            "problem": "Oil and gas well chokes must regulate bottom-hole pressure and flow rates to prevent slugging, gas breakthrough, or formation collapse under stochastic reservoir conditions.",
+            "architecture": [
+                "Mathematical simulation of multiphase flow through variable orifices",
+                "Closed-loop adaptive control algorithms dynamically modulating choke valve opening based on sensor telemetry"
+            ],
+            "metrics": [],
+            "primaryMetricForNodeSize": 0.35
+        },
+        {
+            "id": "fitflow",
+            "name": "FitFlow",
+            "subtitle": "Fitness & Diet Planning Web Application",
+            "category": "applied-ml",
+            "repo": "https://github.com/El3troX/FitFlow",
+            "tier": "light",
+            "stack": [
+                "Vanilla JavaScript",
+                "HTML5",
+                "CSS3",
+                "CSV Data Ingestion",
+                "LocalStorage"
+            ],
+            "problem": "Course project: a fitness and diet planning tool combining nutritional data with workout tracking.",
+            "architecture": [
+                "Dietary planner ingesting FOOD-DATA-GROUP1.csv nutritional data",
+                "Interactive BMI and caloric requirement calculators",
+                "Categorized workout modules: Gym, Yoga, Dance/Ballet, Cardio"
+            ],
+            "metrics": [],
+            "primaryMetricForNodeSize": 0.2
+        },
+        {
+            "id": "bcs",
+            "name": "Bus Credit System (BCS)",
+            "subtitle": "Campus Transit Payment Solution",
+            "category": "fullstack",
+            "repo": "https://github.com/El3troX/BCS",
+            "tier": "light",
+            "stack": [
+                "JavaScript",
+                "HTML",
+                "CSS",
+                "MySQL"
+            ],
+            "problem": "Campus shuttle transit needed a digital wallet and ticketing solution. Built for Hack Battle by IEEE-CS @ VIT Vellore.",
+            "architecture": [
+                "Digital wallet and ticketing solution for campus shuttle transit",
+                "8 relational MySQL tables for student balances, route schedules, bus capacities, ticket verification"
+            ],
+            "metrics": [
+                {
+                    "label": "Transaction Latency",
+                    "value": "<150ms",
+                    "detail": "verification, 300+ user accounts"
+                }
+            ],
+            "primaryMetricForNodeSize": 0.3
+        },
+        {
+            "id": "multimodal-assistant",
+            "name": "Multimodal AI Assistant",
+            "subtitle": "Vision + Audio + Text with Gemini",
+            "category": "rag-agentic",
+            "repo": "https://github.com/El3troX/AI-PROJECT-MULTIMODAL_PROJECT",
+            "tier": "standard",
+            "stack": [
+                "Streamlit",
+                "Google Gemini API",
+                "OpenCV",
+                "Pillow",
+                "PyAudio"
+            ],
+            "problem": "Users need a single conversational interface that can reason over images, audio, and text together.",
+            "architecture": [
+                "Real-time image processing up to 12MP with OpenCV and Pillow",
+                "Sub-800ms visual feature extraction and response generation via Gemini API",
+                "Multi-turn conversational memory supporting multimodal queries (text + image + speech)"
+            ],
+            "metrics": [
+                {
+                    "label": "Response Time",
+                    "value": "<800ms",
+                    "detail": "visual feature extraction + generation"
+                }
+            ],
+            "primaryMetricForNodeSize": 0.4
+        }
+    ],
+    "hackathons": [
+        {
+            "name": "IIT Bombay Eureka '25",
+            "year": "2025",
+            "detail": "National Finalist - built YogNexus, AI healthcare platform"
+        },
+        {
+            "name": "Goldman Sachs India National Hackathon",
+            "year": "2025-2026",
+            "detail": "Top 10% nationwide among 10,000+ candidates"
+        },
+        {
+            "name": "Deloitte Hacksplosion",
+            "year": "2026",
+            "detail": "High-velocity AI & software prototyping under tight constraints"
+        },
+        {
+            "name": "HackWithInfy",
+            "year": "2025",
+            "detail": "National-level algorithmic problem solving, graph theory"
+        },
+        {
+            "name": "IEEE-CS Hack Battle @ VIT Vellore",
+            "year": "2024",
+            "detail": "Built Bus Credit System (BCS)"
+        }
+    ],
+    "certifications": [
+        {
+            "name": "Google Data Analytics Professional Certificate",
+            "issuer": "Google",
+            "year": "2026"
+        },
+        {
+            "name": "Machine Learning Specialization",
+            "issuer": "Coursera & DeepLearning.AI (Andrew Ng)",
+            "year": "2025"
+        },
+        {
+            "name": "MERN Stack Development Certification",
+            "issuer": "Ethnus",
+            "year": "2025"
+        }
+    ],
+    "leadership": {
+        "org": "Technology and Gaming Club, VIT Vellore",
+        "role": "Senior Core Member",
+        "duration": "August 2023 - Present",
+        "highlights": [
+            "Led cross-team technical logistics, server infrastructure, and stage management for Riviera and Gravitas",
+            "Managed coordination, registration portals, and hardware setup for 300+ active participants per event"
+        ]
+    }
+}

@@ -1,0 +1,101 @@
+@import './tokens.css';
+
+/* CSS Reset & Global Layout */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  width: 100%;
+  min-height: 100%;
+  min-height: 100dvh;
+  background-color: var(--bg-void);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.5;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Accessibility Focus Ring (Visible Keyboard Navigation) per Spec §0 Quality Floor */
+:focus-visible {
+  outline: 2px solid var(--glow) !important;
+  outline-offset: 3px !important;
+  border-radius: 4px;
+}
+
+a:focus-visible,
+button:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--glow) !important;
+  outline-offset: 3px !important;
+}
+
+/* Single WebGL Canvas */
+#webgl-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
+  z-index: var(--z-canvas);
+  pointer-events: auto;
+  outline: none;
+}
+
+/* UI Overlay Container */
+#app {
+  position: relative;
+  width: 100%;
+  z-index: var(--z-content);
+  pointer-events: none;
+}
+
+/* Mobile Responsive Gutters & Layout per PORTFOLIO_SITE_SPEC §0 & §10 */
+@media (max-width: 959px) {
+  section,
+  #hero-section,
+  #about-section,
+  #experience-section,
+  #skills-section,
+  .flagship-project-section,
+  #extras-section,
+  #contact-section {
+    padding-left: 24px !important;
+    padding-right: 24px !important;
+  }
+
+  #standard-strip-scroll {
+    padding-left: 0 !important;
+    padding-right: 24px !important;
+  }
+
+  .standard-project-card {
+    flex: 0 0 320px !important;
+    max-width: 320px !important;
+  }
+}
+
+/* WebKit / Safari Backdrop-Filter Support */
+.exp-hud-card,
+.standard-project-card,
+#skills-crossref-hud,
+#shap-inspector-hud {
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+}
+
+/* Reduced Motion overrides */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

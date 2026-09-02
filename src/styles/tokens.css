@@ -1,0 +1,31 @@
+:root {
+  /* Colors - Base Palette */
+  --bg-void: #0A0A0F;
+  --bg-surface: #13131C;
+  --text-primary: #EDEDF2;
+  --text-secondary: #8B8B9B;
+  --line: #232330;
+  --glow: #E8E6FF;
+
+  /* Data Encoding Categories (Reserved for data visualization only) */
+  --cat-rag-agentic: #A855F7;
+  --cat-fullstack: #3B82F6;
+  --cat-quant: #F59E0B;
+  --cat-applied-ml: #22C55E;
+
+  /* Typography */
+  --font-display: 'Space Grotesk', system-ui, -apple-system, sans-serif;
+  --font-body: 'Satoshi', system-ui, -apple-system, sans-serif;
+  --font-mono: 'IBM Plex Mono', monospace;
+
+  /* Layout & Spacing */
+  --content-max-width: 720px;
+  --content-max-chars: 72ch;
+  --z-canvas: 0;
+  --z-ambient-particles: 1;
+  --z-ui-backdrop: 2;
+  --z-content: 10;
+  --z-nav: 100;
+  --z-cursor: 9999;
+  --z-easter-egg: 10000;
+}

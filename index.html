@@ -1,15 +1,42 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Divyam Pandey — Neural Core Portfolio</title>
+    
+    <!-- SEO & Metadata -->
+    <meta name="description" content="Divyam Pandey — AI/ML Engineer specializing in RAG & Agentic Systems, Information Retrieval, and Distributed Full-Stack Architectures." />
+    <meta name="keywords" content="Divyam Pandey, AI Engineer, Machine Learning, RAG, Agentic Systems, LangGraph, Three.js, Portfolio" />
+    <meta name="author" content="Divyam Pandey" />
+    <meta name="theme-color" content="#0A0A0F" />
+
+    <!-- OpenGraph / Social -->
+    <meta property="og:title" content="Divyam Pandey — Neural Core" />
+    <meta property="og:description" content="AI/ML Engineer specializing in RAG, Agentic AI, and Distributed Systems." />
+    <meta property="og:type" content="website" />
+    
+    <!-- Typography: Space Grotesk (Display), IBM Plex Mono (Data/Code), Satoshi via Fontshare (Body) -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <title>Divyam Pandey — Portfolio</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700&display=swap"
+      rel="stylesheet"
+    />
+    
+    <link rel="stylesheet" href="/src/styles/main.css" />
   </head>
   <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
+    <!-- Single WebGL Canvas for SceneManager -->
+    <canvas id="webgl-canvas" aria-hidden="true"></canvas>
+
+    <!-- UI Overlay Layer -->
+    <main id="app"></main>
+
+    <script type="module" src="/src/main.js"></script>
   </body>
 </html>
